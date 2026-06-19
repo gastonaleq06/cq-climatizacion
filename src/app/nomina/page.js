@@ -1,6 +1,9 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useEffect, useState, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
 const formVacio = {
@@ -24,6 +27,10 @@ function formatFecha(iso) {
 }
 
 export default function Nomina() {
+  const router = useRouter()
+  const [rolVerificado, setRolVerificado] = useState(false)
+  const [accesoDenegado, setAccesoDenegado] = useState(false)
+
   const [registros, setRegistros] = useState([])
   const [empleados, setEmpleados] = useState([])
   const [loading, setLoading] = useState(true)
@@ -77,9 +84,36 @@ export default function Nomina() {
   }, [])
 
   useEffect(() => {
+    async function verificarAcceso() {
+      try {
+        const { data: { user }, error: authError } = await supabase.auth.getUser()
+        if (authError || !user) { router.replace('/login'); return }
+
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('rol')
+          .eq('id', user.id)
+          .single()
+
+        if (profileError || !profile || !['admin', 'jefe'].includes(profile.rol)) {
+          setAccesoDenegado(true)
+          setTimeout(() => router.replace('/'), 1500)
+          return
+        }
+
+        setRolVerificado(true)
+      } catch {
+        router.replace('/login')
+      }
+    }
+    verificarAcceso()
+  }, [router])
+
+  useEffect(() => {
+    if (!rolVerificado) return
     fetchRegistros()
     fetchEmpleados()
-  }, [fetchRegistros, fetchEmpleados])
+  }, [rolVerificado, fetchRegistros, fetchEmpleados])
 
   const registrosFiltrados = registros.filter((r) => {
     const term = searchTerm.toLowerCase()
@@ -189,6 +223,26 @@ export default function Nomina() {
     } finally {
       setEliminandoId(null)
     }
+  }
+
+  if (!rolVerificado) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        {accesoDenegado ? (
+          <div className="fixed bottom-6 right-6 bg-red-600 text-white px-5 py-3 rounded-xl shadow-xl z-50 flex items-center gap-2 text-sm font-semibold">
+            <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+            Acceso denegado
+          </div>
+        ) : (
+          <div className="text-center text-gray-500">
+            <div className="inline-block w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mb-3" />
+            <p>Verificando acceso...</p>
+          </div>
+        )}
+      </div>
+    )
   }
 
   return (

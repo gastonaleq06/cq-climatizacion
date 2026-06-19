@@ -1,7 +1,13 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://dizhjuhogcfjljofduej.supabase.co'
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpemhqdWhvZ2Nmamxqb2ZkdWVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1NjE3NDMsImV4cCI6MjA5NzEzNzc0M30.DdmvvjB8o2dZA66oXLXMEzlZajWgxiLidncz4A6xcgo'
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Faltan variables de entorno: NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY')
+}
+
+const secureFlag = typeof location !== 'undefined' && location.protocol === 'https:' ? '; Secure' : ''
 
 // Cookie-based storage so the session is readable by the proxy for auth protection.
 // The proxy checks for the 'sb-<ref>-auth-token' cookie on every server request.
@@ -14,11 +20,11 @@ const cookieStorage = {
   },
   setItem(key, value) {
     if (typeof document === 'undefined') return
-    document.cookie = `${key}=${encodeURIComponent(value)}; path=/; SameSite=Lax; Max-Age=604800`
+    document.cookie = `${key}=${encodeURIComponent(value)}; path=/; SameSite=Lax; Max-Age=604800${secureFlag}`
   },
   removeItem(key) {
     if (typeof document === 'undefined') return
-    document.cookie = `${key}=; path=/; Max-Age=0`
+    document.cookie = `${key}=; path=/; Max-Age=0${secureFlag}`
   },
 }
 
