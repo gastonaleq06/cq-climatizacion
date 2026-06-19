@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import PlantillaPDF from './PlantillaPDF'
 
 const ESTADOS = ['Pendiente', 'Aprobado', 'Enviado', 'Rechazado']
 
@@ -33,9 +34,40 @@ function formatFecha(fecha) {
   return new Date(fecha + 'T12:00:00').toLocaleDateString('es-AR')
 }
 
+const MOCK_PRESUPUESTO = {
+  numero: '001',
+  fecha: '19/06/2026',
+  validez: '15 días',
+  cliente: {
+    nombre: 'Juan García',
+    empresa: 'Constructora García S.A.',
+    cuit: '30-71234567-9',
+    direccion: 'Av. Corrientes 1234, Buenos Aires',
+  },
+  items: [
+    { descripcion: 'Instalación de split 3000 fg Inverter', cantidad: 2, precioUnitario: 85000, subtotal: 170000 },
+    { descripcion: 'Mantenimiento preventivo anual de climatización', cantidad: 1, precioUnitario: 45000, subtotal: 45000 },
+    { descripcion: 'Cañería de cobre 3/8" y 5/8" (por metro lineal)', cantidad: 10, precioUnitario: 4500, subtotal: 45000 },
+    { descripcion: 'Mano de obra — instalación eléctrica y puesta en marcha', cantidad: 1, precioUnitario: 30000, subtotal: 30000 },
+  ],
+  subtotal: 290000,
+  iva: 60900,
+  total: 350900,
+  terminos: [
+    'Validez del presupuesto: 15 días a partir de la fecha de emisión.',
+    'El precio no incluye materiales adicionales no especificados en este documento.',
+    'Forma de pago: 50% a la firma del contrato, 50% al momento de la entrega.',
+    'Garantía de mano de obra: 6 meses contra defectos de instalación.',
+    'Los equipos cuentan con garantía oficial del fabricante.',
+    'Cualquier modificación al alcance deberá acordarse por escrito.',
+  ],
+}
+
 export default function Presupuestos() {
   const router = useRouter()
   const [vista, setVista] = useState('lista')
+  const pdfRef = useRef(null)
+  const [generando, setGenerando] = useState(false)
 
   const [catalogo, setCatalogo] = useState([])
   const [clientes, setClientes] = useState([])
@@ -53,6 +85,44 @@ export default function Presupuestos() {
   const total = items.reduce((sum, it) => {
     return sum + (parseFloat(it.cantidad) || 0) * (parseFloat(it.precio_unitario) || 0)
   }, 0)
+
+  async function generarPDF() {
+    if (!pdfRef.current) return
+    setGenerando(true)
+    try {
+      const [{ default: html2canvas }, { jsPDF }] = await Promise.all([
+        import('html2canvas'),
+        import('jspdf'),
+      ])
+      const canvas = await html2canvas(pdfRef.current, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+      })
+      const imgData = canvas.toDataURL('image/jpeg', 0.95)
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
+      const pdfW = 210
+      const pdfH = 297
+      const ratio = pdfW / canvas.width
+      const totalH = canvas.height * ratio
+      let heightLeft = totalH
+      let pos = 0
+      pdf.addImage(imgData, 'JPEG', 0, pos, pdfW, totalH)
+      heightLeft -= pdfH
+      while (heightLeft > 0) {
+        pos -= pdfH
+        pdf.addPage()
+        pdf.addImage(imgData, 'JPEG', 0, pos, pdfW, totalH)
+        heightLeft -= pdfH
+      }
+      pdf.save('presupuesto_001.pdf')
+    } catch (err) {
+      alert('Error al generar el PDF: ' + err.message)
+    } finally {
+      setGenerando(false)
+    }
+  }
 
   async function fetchCatalogo() {
     const { data } = await supabase
@@ -177,6 +247,52 @@ export default function Presupuestos() {
     setVista('lista')
   }
 
+  // ── VISTA PDF ──────────────────────────────────────────────────────────
+  if (vista === 'pdf') {
+    return (
+      <div>
+        {/* Barra superior */}
+        <div className="sticky top-0 z-10 bg-white border-b border-gray-200 px-4 md:px-8 py-3 flex items-center justify-between gap-3 mb-6 -mx-4 md:-mx-8">
+          <button
+            onClick={() => setVista('lista')}
+            className="text-gray-400 hover:text-gray-700 text-sm transition-colors"
+          >
+            ← Volver a lista
+          </button>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-gray-400 hidden sm:inline">Datos de ejemplo — plantilla lista para integrar</span>
+            <button
+              onClick={generarPDF}
+              disabled={generando}
+              className="bg-[#FF7900] hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold px-5 py-2 rounded-lg transition-colors shadow-lg shadow-orange-300/40 flex items-center gap-2"
+            >
+              {generando ? (
+                <>
+                  <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Generando...
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Descargar PDF
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Preview A4 centrado */}
+        <div className="flex justify-center pb-12 overflow-x-auto">
+          <div className="shadow-2xl shadow-gray-400/20 rounded overflow-hidden">
+            <PlantillaPDF ref={pdfRef} presupuesto={MOCK_PRESUPUESTO} />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   // ── LISTA ──────────────────────────────────────────────────────────────
   if (vista === 'lista') {
     return (
@@ -186,12 +302,23 @@ export default function Presupuestos() {
             <h2 className="text-2xl font-bold text-primary">Presupuestos</h2>
             <p className="text-gray-500 text-sm mt-0.5">Historial de presupuestos generados</p>
           </div>
-          <button
-            onClick={() => setVista('nuevo')}
-            className="bg-primary hover:bg-primary-600 text-white font-medium px-4 py-2 rounded-lg transition-colors shadow-lg shadow-primary/30"
-          >
-            + Nuevo Presupuesto
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setVista('pdf')}
+              className="border border-gray-200 hover:border-gray-300 text-gray-600 hover:text-gray-800 font-medium px-4 py-2 rounded-lg transition-colors text-sm flex items-center gap-1.5"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Vista PDF
+            </button>
+            <button
+              onClick={() => setVista('nuevo')}
+              className="bg-primary hover:bg-primary-600 text-white font-medium px-4 py-2 rounded-lg transition-colors shadow-lg shadow-primary/30"
+            >
+              + Nuevo Presupuesto
+            </button>
+          </div>
         </div>
 
         {loading && (
