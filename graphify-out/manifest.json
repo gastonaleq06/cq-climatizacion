@@ -1,0 +1,162 @@
+{
+  "C:\\Users\\HP\\cq-climatizacion\\.claude\\settings.local.json": {
+    "mtime": 1781842509.1144304,
+    "ast_hash": "eddf0e6d8a8563f9a146456a893ff5d0",
+    "semantic_hash": "eddf0e6d8a8563f9a146456a893ff5d0"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\eslint.config.mjs": {
+    "mtime": 1781579393.9334586,
+    "ast_hash": "bcb00e240634dd9448e57386fdff1902",
+    "semantic_hash": "bcb00e240634dd9448e57386fdff1902"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\jsconfig.json": {
+    "mtime": 1781579720.2611299,
+    "ast_hash": "373b4d3b81ad935084b8292c8233423e",
+    "semantic_hash": "373b4d3b81ad935084b8292c8233423e"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\next.config.mjs": {
+    "mtime": 1781726577.157382,
+    "ast_hash": "ec9ee056132caf292c45b068ba45d9df",
+    "semantic_hash": "ec9ee056132caf292c45b068ba45d9df"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\package.json": {
+    "mtime": 1781580178.5383363,
+    "ast_hash": "77639ac7532557288f91366db08f6a52",
+    "semantic_hash": "77639ac7532557288f91366db08f6a52"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\postcss.config.mjs": {
+    "mtime": 1781579393.9568594,
+    "ast_hash": "239f3ebf717465dc636818a1a619398d",
+    "semantic_hash": "239f3ebf717465dc636818a1a619398d"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\src\\app\\asignaciones\\page.js": {
+    "mtime": 1781752941.7677379,
+    "ast_hash": "f71bb02125057e80dd462a2b49c2e59a",
+    "semantic_hash": "f71bb02125057e80dd462a2b49c2e59a"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\src\\app\\catalogo\\page.js": {
+    "mtime": 1781750133.9050345,
+    "ast_hash": "b87d887967e1d98ec00b276b0dbb44d9",
+    "semantic_hash": "b87d887967e1d98ec00b276b0dbb44d9"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\src\\app\\clientes\\page.js": {
+    "mtime": 1781586474.5255733,
+    "ast_hash": "310ed7553a5585ef3556e1c7b11981b0",
+    "semantic_hash": "310ed7553a5585ef3556e1c7b11981b0"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\src\\app\\inventario\\page.js": {
+    "mtime": 1781754345.0688095,
+    "ast_hash": "06c7720c3cb135110850771b3e522fc6",
+    "semantic_hash": "06c7720c3cb135110850771b3e522fc6"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\src\\app\\layout.js": {
+    "mtime": 1781751123.255241,
+    "ast_hash": "6c991d7b98dcc2d3bc132da11a2a8639",
+    "semantic_hash": "6c991d7b98dcc2d3bc132da11a2a8639"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\src\\app\\login\\page.js": {
+    "mtime": 1781725805.5660293,
+    "ast_hash": "652568d65f5ffa0bf08f7851b482fa91",
+    "semantic_hash": "652568d65f5ffa0bf08f7851b482fa91"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\src\\app\\nomina\\page.js": {
+    "mtime": 1781840764.2129083,
+    "ast_hash": "9f63f179a4921b0dcbb2fefbee580402",
+    "semantic_hash": "9f63f179a4921b0dcbb2fefbee580402"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\src\\app\\obras\\[id]\\page.js": {
+    "mtime": 1781754444.3145702,
+    "ast_hash": "9830f0bac3192d6cb45fe34b1980fd0b",
+    "semantic_hash": "9830f0bac3192d6cb45fe34b1980fd0b"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\src\\app\\obras\\page.js": {
+    "mtime": 1781754357.0229554,
+    "ast_hash": "18c82a171800f051c92f80ff2f7a729b",
+    "semantic_hash": "18c82a171800f051c92f80ff2f7a729b"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\src\\app\\page.js": {
+    "mtime": 1781725340.647705,
+    "ast_hash": "34f0fe5b6c34076e723c5455846b473a",
+    "semantic_hash": "34f0fe5b6c34076e723c5455846b473a"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\src\\app\\presupuestos\\[id]\\page.js": {
+    "mtime": 1781751935.4043148,
+    "ast_hash": "14781e28c64f3b5b2e4f5847eedc1935",
+    "semantic_hash": "14781e28c64f3b5b2e4f5847eedc1935"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\src\\app\\presupuestos\\page.js": {
+    "mtime": 1781751817.9403994,
+    "ast_hash": "995bc18398d903e8d03e6f4de9bf3d9c",
+    "semantic_hash": "995bc18398d903e8d03e6f4de9bf3d9c"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\src\\app\\tecnicos\\page.js": {
+    "mtime": 1781840773.6857486,
+    "ast_hash": "4be4b7b58947816d03a7ff6f0dfe7d1d",
+    "semantic_hash": "4be4b7b58947816d03a7ff6f0dfe7d1d"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\src\\lib\\supabase.js": {
+    "mtime": 1781832067.255052,
+    "ast_hash": "b9fa7bd5eab260eb1a4e18ebbefcb215",
+    "semantic_hash": "b9fa7bd5eab260eb1a4e18ebbefcb215"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\src\\proxy.js": {
+    "mtime": 1781841357.3567393,
+    "ast_hash": "1927c6d6736b92abfbed17baad20e521",
+    "semantic_hash": "1927c6d6736b92abfbed17baad20e521"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\supabase\\migrations\\20260618_rbac.sql": {
+    "mtime": 1781830384.4316387,
+    "ast_hash": "12911284dbcfa21243b487e4e99899d7",
+    "semantic_hash": "12911284dbcfa21243b487e4e99899d7"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\supabase\\migrations\\20260618_rls_policies.sql": {
+    "mtime": 1781829116.0212975,
+    "ast_hash": "21d584f34d301d5c857af87f77884713",
+    "semantic_hash": "21d584f34d301d5c857af87f77884713"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\AGENTS.md": {
+    "mtime": 1781579769.9992485,
+    "ast_hash": "9e09241799026ac05be315a2f0b50055",
+    "semantic_hash": "9e09241799026ac05be315a2f0b50055"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\CLAUDE.md": {
+    "mtime": 1781579769.9992485,
+    "ast_hash": "5c27369b226fcf2be8a6cfe52224e767",
+    "semantic_hash": "5c27369b226fcf2be8a6cfe52224e767"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\README.md": {
+    "mtime": 1781579393.9129426,
+    "ast_hash": "ff47271e53637b2ba6ba72ad2b70f6d7",
+    "semantic_hash": "ff47271e53637b2ba6ba72ad2b70f6d7"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\public\\file.svg": {
+    "mtime": 1781579393.962088,
+    "ast_hash": "d09f95206c3fa0bb9bd9fefabfd0ea71",
+    "semantic_hash": "d09f95206c3fa0bb9bd9fefabfd0ea71"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\public\\globe.svg": {
+    "mtime": 1781579393.9728525,
+    "ast_hash": "2aaafa6a49b6563925fe440891e32717",
+    "semantic_hash": "2aaafa6a49b6563925fe440891e32717"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\public\\logo.png": {
+    "mtime": 1781726087.7956624,
+    "ast_hash": "c38059403a24fb205bf87c1cc2c6dbb9",
+    "semantic_hash": "c38059403a24fb205bf87c1cc2c6dbb9"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\public\\next.svg": {
+    "mtime": 1781579393.98556,
+    "ast_hash": "8e061864f388b47f33a1c3780831193e",
+    "semantic_hash": "8e061864f388b47f33a1c3780831193e"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\public\\vercel.svg": {
+    "mtime": 1781579393.9986105,
+    "ast_hash": "c0af2f507b369b085b35ef4bbe3bcf1e",
+    "semantic_hash": "c0af2f507b369b085b35ef4bbe3bcf1e"
+  },
+  "C:\\Users\\HP\\cq-climatizacion\\public\\window.svg": {
+    "mtime": 1781579394.0082488,
+    "ast_hash": "a2760511c65806022ad20adf74370ff3",
+    "semantic_hash": "a2760511c65806022ad20adf74370ff3"
+  }
+}

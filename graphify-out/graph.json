@@ -1,0 +1,1628 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "label": "eslint.config.mjs",
+      "file_type": "code",
+      "source_file": "eslint.config.mjs",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "eslint_config",
+      "community": 17,
+      "norm_label": "eslint.config.mjs"
+    },
+    {
+      "label": "eslintConfig",
+      "file_type": "code",
+      "source_file": "eslint.config.mjs",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "eslint_config_eslintconfig",
+      "community": 17,
+      "norm_label": "eslintconfig"
+    },
+    {
+      "label": "jsconfig.json",
+      "file_type": "code",
+      "source_file": "jsconfig.json",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "jsconfig",
+      "community": 9,
+      "norm_label": "jsconfig.json"
+    },
+    {
+      "label": "compilerOptions",
+      "file_type": "code",
+      "source_file": "jsconfig.json",
+      "source_location": "L2",
+      "_origin": "ast",
+      "id": "jsconfig_compileroptions",
+      "community": 9,
+      "norm_label": "compileroptions"
+    },
+    {
+      "label": "paths",
+      "file_type": "code",
+      "source_file": "jsconfig.json",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "jsconfig_compileroptions_paths",
+      "community": 9,
+      "norm_label": "paths"
+    },
+    {
+      "label": "@/*",
+      "file_type": "code",
+      "source_file": "jsconfig.json",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "jsconfig_paths",
+      "community": 9,
+      "norm_label": "@/*"
+    },
+    {
+      "label": "next.config.mjs",
+      "file_type": "code",
+      "source_file": "next.config.mjs",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "next_config",
+      "community": 19,
+      "norm_label": "next.config.mjs"
+    },
+    {
+      "label": "nextConfig",
+      "file_type": "code",
+      "source_file": "next.config.mjs",
+      "source_location": "L2",
+      "_origin": "ast",
+      "id": "next_config_nextconfig",
+      "community": 19,
+      "norm_label": "nextconfig"
+    },
+    {
+      "label": "package.json",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "package",
+      "community": 0,
+      "norm_label": "package.json"
+    },
+    {
+      "label": "name",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L2",
+      "_origin": "ast",
+      "id": "package_name",
+      "community": 0,
+      "norm_label": "name"
+    },
+    {
+      "label": "version",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "package_version",
+      "community": 0,
+      "norm_label": "version"
+    },
+    {
+      "label": "private",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "package_private",
+      "community": 0,
+      "norm_label": "private"
+    },
+    {
+      "label": "scripts",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "package_scripts",
+      "community": 6,
+      "norm_label": "scripts"
+    },
+    {
+      "label": "dev",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "package_scripts_dev",
+      "community": 6,
+      "norm_label": "dev"
+    },
+    {
+      "label": "build",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "package_scripts_build",
+      "community": 6,
+      "norm_label": "build"
+    },
+    {
+      "label": "start",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "package_scripts_start",
+      "community": 6,
+      "norm_label": "start"
+    },
+    {
+      "label": "lint",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "package_scripts_lint",
+      "community": 6,
+      "norm_label": "lint"
+    },
+    {
+      "label": "dependencies",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "package_dependencies",
+      "community": 5,
+      "norm_label": "dependencies"
+    },
+    {
+      "label": "@supabase/supabase-js",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "package_dependencies_supabase_supabase_js",
+      "community": 5,
+      "norm_label": "@supabase/supabase-js"
+    },
+    {
+      "label": "next",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "package_dependencies_next",
+      "community": 5,
+      "norm_label": "next"
+    },
+    {
+      "label": "react",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "package_dependencies_react",
+      "community": 5,
+      "norm_label": "react"
+    },
+    {
+      "label": "react-dom",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "package_dependencies_react_dom",
+      "community": 5,
+      "norm_label": "react-dom"
+    },
+    {
+      "label": "devDependencies",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "package_devdependencies",
+      "community": 0,
+      "norm_label": "devdependencies"
+    },
+    {
+      "label": "@tailwindcss/postcss",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "package_devdependencies_tailwindcss_postcss",
+      "community": 0,
+      "norm_label": "@tailwindcss/postcss"
+    },
+    {
+      "label": "eslint",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "package_devdependencies_eslint",
+      "community": 0,
+      "norm_label": "eslint"
+    },
+    {
+      "label": "eslint-config-next",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "package_devdependencies_eslint_config_next",
+      "community": 0,
+      "norm_label": "eslint-config-next"
+    },
+    {
+      "label": "tailwindcss",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "package_devdependencies_tailwindcss",
+      "community": 0,
+      "norm_label": "tailwindcss"
+    },
+    {
+      "label": "postcss.config.mjs",
+      "file_type": "code",
+      "source_file": "postcss.config.mjs",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "postcss_config",
+      "community": 20,
+      "norm_label": "postcss.config.mjs"
+    },
+    {
+      "label": "config",
+      "file_type": "code",
+      "source_file": "postcss.config.mjs",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "postcss_config_config",
+      "community": 20,
+      "norm_label": "config"
+    },
+    {
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "src/app/asignaciones/page.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "asignaciones_page",
+      "community": 15,
+      "norm_label": "page.js"
+    },
+    {
+      "label": "Asignaciones()",
+      "file_type": "code",
+      "source_file": "src/app/asignaciones/page.js",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "asignaciones_page_asignaciones",
+      "community": 15,
+      "norm_label": "asignaciones()"
+    },
+    {
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "src/app/catalogo/page.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "catalogo_page",
+      "community": 7,
+      "norm_label": "page.js"
+    },
+    {
+      "label": "CATEGORIAS",
+      "file_type": "code",
+      "source_file": "src/app/catalogo/page.js",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "catalogo_page_categorias",
+      "community": 7,
+      "norm_label": "categorias"
+    },
+    {
+      "label": "FORM_VACIO",
+      "file_type": "code",
+      "source_file": "src/app/catalogo/page.js",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "catalogo_page_form_vacio",
+      "community": 7,
+      "norm_label": "form_vacio"
+    },
+    {
+      "label": "CatalogoPrecios()",
+      "file_type": "code",
+      "source_file": "src/app/catalogo/page.js",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "catalogo_page_catalogoprecios",
+      "community": 7,
+      "norm_label": "catalogoprecios()"
+    },
+    {
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "src/app/clientes/page.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "clientes_page",
+      "community": 16,
+      "norm_label": "page.js"
+    },
+    {
+      "label": "Clientes()",
+      "file_type": "code",
+      "source_file": "src/app/clientes/page.js",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "clientes_page_clientes",
+      "community": 16,
+      "norm_label": "clientes()"
+    },
+    {
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "src/app/inventario/page.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "inventario_page",
+      "community": 8,
+      "norm_label": "page.js"
+    },
+    {
+      "label": "ESTADO_STYLES",
+      "file_type": "code",
+      "source_file": "src/app/inventario/page.js",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "inventario_page_estado_styles",
+      "community": 8,
+      "norm_label": "estado_styles"
+    },
+    {
+      "label": "formVacio",
+      "file_type": "code",
+      "source_file": "src/app/inventario/page.js",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "inventario_page_formvacio",
+      "community": 8,
+      "norm_label": "formvacio"
+    },
+    {
+      "label": "Inventario()",
+      "file_type": "code",
+      "source_file": "src/app/inventario/page.js",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "inventario_page_inventario",
+      "community": 8,
+      "norm_label": "inventario()"
+    },
+    {
+      "label": "layout.js",
+      "file_type": "code",
+      "source_file": "src/app/layout.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "app_layout",
+      "community": 12,
+      "norm_label": "layout.js"
+    },
+    {
+      "label": "navItems",
+      "file_type": "code",
+      "source_file": "src/app/layout.js",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "app_layout_navitems",
+      "community": 12,
+      "norm_label": "navitems"
+    },
+    {
+      "label": "RootLayout()",
+      "file_type": "code",
+      "source_file": "src/app/layout.js",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "app_layout_rootlayout",
+      "community": 12,
+      "norm_label": "rootlayout()"
+    },
+    {
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "src/app/login/page.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "login_page",
+      "community": 18,
+      "norm_label": "page.js"
+    },
+    {
+      "label": "LoginPage()",
+      "file_type": "code",
+      "source_file": "src/app/login/page.js",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "login_page_loginpage",
+      "community": 18,
+      "norm_label": "loginpage()"
+    },
+    {
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "src/app/nomina/page.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "nomina_page",
+      "community": 4,
+      "norm_label": "page.js"
+    },
+    {
+      "label": "formVacio",
+      "file_type": "code",
+      "source_file": "src/app/nomina/page.js",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "nomina_page_formvacio",
+      "community": 4,
+      "norm_label": "formvacio"
+    },
+    {
+      "label": "formatPeso()",
+      "file_type": "code",
+      "source_file": "src/app/nomina/page.js",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "nomina_page_formatpeso",
+      "community": 4,
+      "norm_label": "formatpeso()"
+    },
+    {
+      "label": "formatFecha()",
+      "file_type": "code",
+      "source_file": "src/app/nomina/page.js",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "nomina_page_formatfecha",
+      "community": 4,
+      "norm_label": "formatfecha()"
+    },
+    {
+      "label": "Nomina()",
+      "file_type": "code",
+      "source_file": "src/app/nomina/page.js",
+      "source_location": "L29",
+      "_origin": "ast",
+      "id": "nomina_page_nomina",
+      "community": 4,
+      "norm_label": "nomina()"
+    },
+    {
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "src/app/obras/[id]/page.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_app_obras_id_page_js_id_page",
+      "community": 3,
+      "norm_label": "page.js"
+    },
+    {
+      "label": "colorEstado()",
+      "file_type": "code",
+      "source_file": "src/app/obras/[id]/page.js",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "id_page_colorestado",
+      "community": 3,
+      "norm_label": "colorestado()"
+    },
+    {
+      "label": "colorEstadoPresupuesto()",
+      "file_type": "code",
+      "source_file": "src/app/obras/[id]/page.js",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "id_page_colorestadopresupuesto",
+      "community": 3,
+      "norm_label": "colorestadopresupuesto()"
+    },
+    {
+      "label": "formatPrecio()",
+      "file_type": "code",
+      "source_file": "src/app/obras/[id]/page.js",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "src_app_obras_id_page_js_id_page_formatprecio",
+      "community": 3,
+      "norm_label": "formatprecio()"
+    },
+    {
+      "label": "formatFecha()",
+      "file_type": "code",
+      "source_file": "src/app/obras/[id]/page.js",
+      "source_location": "L29",
+      "_origin": "ast",
+      "id": "src_app_obras_id_page_js_id_page_formatfecha",
+      "community": 3,
+      "norm_label": "formatfecha()"
+    },
+    {
+      "label": "FichaObra()",
+      "file_type": "code",
+      "source_file": "src/app/obras/[id]/page.js",
+      "source_location": "L34",
+      "_origin": "ast",
+      "id": "id_page_fichaobra",
+      "community": 3,
+      "norm_label": "fichaobra()"
+    },
+    {
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "src/app/obras/page.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "obras_page",
+      "community": 10,
+      "norm_label": "page.js"
+    },
+    {
+      "label": "ESTADOS",
+      "file_type": "code",
+      "source_file": "src/app/obras/page.js",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "obras_page_estados",
+      "community": 10,
+      "norm_label": "estados"
+    },
+    {
+      "label": "formVacio",
+      "file_type": "code",
+      "source_file": "src/app/obras/page.js",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "obras_page_formvacio",
+      "community": 10,
+      "norm_label": "formvacio"
+    },
+    {
+      "label": "Obras()",
+      "file_type": "code",
+      "source_file": "src/app/obras/page.js",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "obras_page_obras",
+      "community": 10,
+      "norm_label": "obras()"
+    },
+    {
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "src/app/page.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "app_page",
+      "community": 13,
+      "norm_label": "page.js"
+    },
+    {
+      "label": "cards",
+      "file_type": "code",
+      "source_file": "src/app/page.js",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "app_page_cards",
+      "community": 13,
+      "norm_label": "cards"
+    },
+    {
+      "label": "Dashboard()",
+      "file_type": "code",
+      "source_file": "src/app/page.js",
+      "source_location": "L50",
+      "_origin": "ast",
+      "id": "app_page_dashboard",
+      "community": 13,
+      "norm_label": "dashboard()"
+    },
+    {
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "src/app/presupuestos/[id]/page.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_app_presupuestos_id_page_js_id_page",
+      "community": 1,
+      "norm_label": "page.js"
+    },
+    {
+      "label": "ESTADOS",
+      "file_type": "code",
+      "source_file": "src/app/presupuestos/[id]/page.js",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "id_page_estados",
+      "community": 1,
+      "norm_label": "estados"
+    },
+    {
+      "label": "BADGE_COLOR",
+      "file_type": "code",
+      "source_file": "src/app/presupuestos/[id]/page.js",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "id_page_badge_color",
+      "community": 1,
+      "norm_label": "badge_color"
+    },
+    {
+      "label": "itemVacio()",
+      "file_type": "code",
+      "source_file": "src/app/presupuestos/[id]/page.js",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "id_page_itemvacio",
+      "community": 1,
+      "norm_label": "itemvacio()"
+    },
+    {
+      "label": "formatPrecio()",
+      "file_type": "code",
+      "source_file": "src/app/presupuestos/[id]/page.js",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "src_app_presupuestos_id_page_js_id_page_formatprecio",
+      "community": 1,
+      "norm_label": "formatprecio()"
+    },
+    {
+      "label": "formatFecha()",
+      "file_type": "code",
+      "source_file": "src/app/presupuestos/[id]/page.js",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "src_app_presupuestos_id_page_js_id_page_formatfecha",
+      "community": 1,
+      "norm_label": "formatfecha()"
+    },
+    {
+      "label": "EditarPresupuesto()",
+      "file_type": "code",
+      "source_file": "src/app/presupuestos/[id]/page.js",
+      "source_location": "L36",
+      "_origin": "ast",
+      "id": "id_page_editarpresupuesto",
+      "community": 1,
+      "norm_label": "editarpresupuesto()"
+    },
+    {
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "src/app/presupuestos/page.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "presupuestos_page",
+      "community": 2,
+      "norm_label": "page.js"
+    },
+    {
+      "label": "ESTADOS",
+      "file_type": "code",
+      "source_file": "src/app/presupuestos/page.js",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "presupuestos_page_estados",
+      "community": 2,
+      "norm_label": "estados"
+    },
+    {
+      "label": "BADGE_COLOR",
+      "file_type": "code",
+      "source_file": "src/app/presupuestos/page.js",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "presupuestos_page_badge_color",
+      "community": 2,
+      "norm_label": "badge_color"
+    },
+    {
+      "label": "itemVacio()",
+      "file_type": "code",
+      "source_file": "src/app/presupuestos/page.js",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "presupuestos_page_itemvacio",
+      "community": 2,
+      "norm_label": "itemvacio()"
+    },
+    {
+      "label": "formatPrecio()",
+      "file_type": "code",
+      "source_file": "src/app/presupuestos/page.js",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "presupuestos_page_formatprecio",
+      "community": 2,
+      "norm_label": "formatprecio()"
+    },
+    {
+      "label": "formatFecha()",
+      "file_type": "code",
+      "source_file": "src/app/presupuestos/page.js",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "presupuestos_page_formatfecha",
+      "community": 2,
+      "norm_label": "formatfecha()"
+    },
+    {
+      "label": "Presupuestos()",
+      "file_type": "code",
+      "source_file": "src/app/presupuestos/page.js",
+      "source_location": "L36",
+      "_origin": "ast",
+      "id": "presupuestos_page_presupuestos",
+      "community": 2,
+      "norm_label": "presupuestos()"
+    },
+    {
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "src/app/tecnicos/page.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "tecnicos_page",
+      "community": 21,
+      "norm_label": "page.js"
+    },
+    {
+      "label": "Tecnicos()",
+      "file_type": "code",
+      "source_file": "src/app/tecnicos/page.js",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "tecnicos_page_tecnicos",
+      "community": 21,
+      "norm_label": "tecnicos()"
+    },
+    {
+      "label": "supabase.js",
+      "file_type": "code",
+      "source_file": "src/lib/supabase.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "lib_supabase",
+      "community": 14,
+      "norm_label": "supabase.js"
+    },
+    {
+      "label": "cookieStorage",
+      "file_type": "code",
+      "source_file": "src/lib/supabase.js",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "lib_supabase_cookiestorage",
+      "community": 14,
+      "norm_label": "cookiestorage"
+    },
+    {
+      "label": "supabase",
+      "file_type": "code",
+      "source_file": "src/lib/supabase.js",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "lib_supabase_supabase",
+      "community": 14,
+      "norm_label": "supabase"
+    },
+    {
+      "label": "proxy.js",
+      "file_type": "code",
+      "source_file": "src/proxy.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_proxy",
+      "community": 11,
+      "norm_label": "proxy.js"
+    },
+    {
+      "label": "RBAC_PATHS",
+      "file_type": "code",
+      "source_file": "src/proxy.js",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "src_proxy_rbac_paths",
+      "community": 11,
+      "norm_label": "rbac_paths"
+    },
+    {
+      "label": "proxy()",
+      "file_type": "code",
+      "source_file": "src/proxy.js",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "src_proxy_proxy",
+      "community": 11,
+      "norm_label": "proxy()"
+    },
+    {
+      "label": "config",
+      "file_type": "code",
+      "source_file": "src/proxy.js",
+      "source_location": "L64",
+      "_origin": "ast",
+      "id": "src_proxy_config",
+      "community": 11,
+      "norm_label": "config"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "eslint.config.mjs",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "eslint_config",
+      "target": "eslint_config_eslintconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "jsconfig.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "jsconfig",
+      "target": "jsconfig_compileroptions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "jsconfig.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "jsconfig_compileroptions",
+      "target": "jsconfig_compileroptions_paths",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "jsconfig.json",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "jsconfig_compileroptions_paths",
+      "target": "jsconfig_paths",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "next.config.mjs",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "next_config",
+      "target": "next_config_nextconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "package",
+      "target": "package_dependencies",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "package",
+      "target": "package_devdependencies",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "package",
+      "target": "package_name",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "package",
+      "target": "package_private",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "package",
+      "target": "package_scripts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "package",
+      "target": "package_version",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "package_scripts",
+      "target": "package_scripts_build",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "package_scripts",
+      "target": "package_scripts_dev",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "package_scripts",
+      "target": "package_scripts_lint",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "package_scripts",
+      "target": "package_scripts_start",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "package_dependencies",
+      "target": "package_dependencies_next",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "package_dependencies",
+      "target": "package_dependencies_react",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "package_dependencies",
+      "target": "package_dependencies_react_dom",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "package_dependencies",
+      "target": "package_dependencies_supabase_supabase_js",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_eslint",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_eslint_config_next",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_tailwindcss",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_tailwindcss_postcss",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "postcss.config.mjs",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "postcss_config",
+      "target": "postcss_config_config",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/asignaciones/page.js",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "asignaciones_page",
+      "target": "asignaciones_page_asignaciones",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/catalogo/page.js",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "catalogo_page",
+      "target": "catalogo_page_catalogoprecios",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/catalogo/page.js",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "catalogo_page",
+      "target": "catalogo_page_categorias",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/catalogo/page.js",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "catalogo_page",
+      "target": "catalogo_page_form_vacio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/clientes/page.js",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "clientes_page",
+      "target": "clientes_page_clientes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/inventario/page.js",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "inventario_page",
+      "target": "inventario_page_estado_styles",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/inventario/page.js",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "inventario_page",
+      "target": "inventario_page_formvacio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/inventario/page.js",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "inventario_page",
+      "target": "inventario_page_inventario",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/layout.js",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "app_layout",
+      "target": "app_layout_navitems",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/layout.js",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "app_layout",
+      "target": "app_layout_rootlayout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/login/page.js",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "login_page",
+      "target": "login_page_loginpage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/nomina/page.js",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "nomina_page",
+      "target": "nomina_page_formatfecha",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/nomina/page.js",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "nomina_page",
+      "target": "nomina_page_formatpeso",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/nomina/page.js",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "nomina_page",
+      "target": "nomina_page_formvacio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/nomina/page.js",
+      "source_location": "L29",
+      "weight": 1.0,
+      "source": "nomina_page",
+      "target": "nomina_page_nomina",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/nomina/page.js",
+      "source_location": "L267",
+      "weight": 1.0,
+      "source": "nomina_page_nomina",
+      "target": "nomina_page_formatfecha",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/obras/[id]/page.js",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_app_obras_id_page_js_id_page",
+      "target": "id_page_colorestado",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/obras/[id]/page.js",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "src_app_obras_id_page_js_id_page",
+      "target": "id_page_colorestadopresupuesto",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/obras/[id]/page.js",
+      "source_location": "L34",
+      "weight": 1.0,
+      "source": "src_app_obras_id_page_js_id_page",
+      "target": "id_page_fichaobra",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/obras/[id]/page.js",
+      "source_location": "L29",
+      "weight": 1.0,
+      "source": "src_app_obras_id_page_js_id_page",
+      "target": "src_app_obras_id_page_js_id_page_formatfecha",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/obras/[id]/page.js",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "src_app_obras_id_page_js_id_page",
+      "target": "src_app_obras_id_page_js_id_page_formatprecio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/obras/[id]/page.js",
+      "source_location": "L157",
+      "weight": 1.0,
+      "source": "id_page_fichaobra",
+      "target": "id_page_colorestado",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/obras/[id]/page.js",
+      "source_location": "L162",
+      "weight": 1.0,
+      "source": "id_page_fichaobra",
+      "target": "src_app_obras_id_page_js_id_page_formatfecha",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/obras/page.js",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "obras_page",
+      "target": "obras_page_estados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/obras/page.js",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "obras_page",
+      "target": "obras_page_formvacio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/obras/page.js",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "obras_page",
+      "target": "obras_page_obras",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/page.js",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "app_page",
+      "target": "app_page_cards",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/page.js",
+      "source_location": "L50",
+      "weight": 1.0,
+      "source": "app_page",
+      "target": "app_page_dashboard",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/presupuestos/[id]/page.js",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "src_app_presupuestos_id_page_js_id_page",
+      "target": "id_page_badge_color",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/presupuestos/[id]/page.js",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "src_app_presupuestos_id_page_js_id_page",
+      "target": "id_page_editarpresupuesto",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/presupuestos/[id]/page.js",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_app_presupuestos_id_page_js_id_page",
+      "target": "id_page_estados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/presupuestos/[id]/page.js",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "src_app_presupuestos_id_page_js_id_page",
+      "target": "id_page_itemvacio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/presupuestos/[id]/page.js",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "src_app_presupuestos_id_page_js_id_page",
+      "target": "src_app_presupuestos_id_page_js_id_page_formatfecha",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/presupuestos/[id]/page.js",
+      "source_location": "L27",
+      "weight": 1.0,
+      "source": "src_app_presupuestos_id_page_js_id_page",
+      "target": "src_app_presupuestos_id_page_js_id_page_formatprecio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/presupuestos/[id]/page.js",
+      "source_location": "L364",
+      "weight": 1.0,
+      "source": "id_page_editarpresupuesto",
+      "target": "src_app_presupuestos_id_page_js_id_page_formatprecio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/presupuestos/[id]/page.js",
+      "source_location": "L205",
+      "weight": 1.0,
+      "source": "id_page_editarpresupuesto",
+      "target": "src_app_presupuestos_id_page_js_id_page_formatfecha",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/presupuestos/page.js",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "presupuestos_page",
+      "target": "presupuestos_page_badge_color",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/presupuestos/page.js",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "presupuestos_page",
+      "target": "presupuestos_page_estados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/presupuestos/page.js",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "presupuestos_page",
+      "target": "presupuestos_page_formatfecha",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/presupuestos/page.js",
+      "source_location": "L27",
+      "weight": 1.0,
+      "source": "presupuestos_page",
+      "target": "presupuestos_page_formatprecio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/presupuestos/page.js",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "presupuestos_page",
+      "target": "presupuestos_page_itemvacio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/presupuestos/page.js",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "presupuestos_page",
+      "target": "presupuestos_page_presupuestos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/presupuestos/page.js",
+      "source_location": "L49",
+      "weight": 1.0,
+      "source": "presupuestos_page_presupuestos",
+      "target": "presupuestos_page_itemvacio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/presupuestos/page.js",
+      "source_location": "L460",
+      "weight": 1.0,
+      "source": "presupuestos_page_presupuestos",
+      "target": "presupuestos_page_formatprecio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/tecnicos/page.js",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "tecnicos_page",
+      "target": "tecnicos_page_tecnicos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/supabase.js",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "lib_supabase",
+      "target": "lib_supabase_cookiestorage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/supabase.js",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "lib_supabase",
+      "target": "lib_supabase_supabase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/proxy.js",
+      "source_location": "L64",
+      "weight": 1.0,
+      "source": "src_proxy",
+      "target": "src_proxy_config",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/proxy.js",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "src_proxy",
+      "target": "src_proxy_proxy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/proxy.js",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_proxy",
+      "target": "src_proxy_rbac_paths",
+      "confidence_score": 1.0
+    }
+  ],
+  "hyperedges": [],
+  "built_at_commit": "1de3acb81015380bb5dc3a01420826af483d20bd"
+}
