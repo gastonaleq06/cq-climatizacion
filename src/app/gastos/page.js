@@ -6,27 +6,31 @@ import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
-const formVacio = {
-  fecha: '',
-  id_empleado: '',
-  pago_hora: '',
-  horas_trabajadas: '',
-  remunerativo: '',
-  detalle_otros: '',
-  total_pago: '',
-}
-
-function getHoyAR() {
-  return new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' })
-}
+const CONCEPTOS = [
+  'Nafta',
+  'Materiales',
+  'Viáticos',
+  'Herramientas',
+  'Servicios',
+  'Transporte',
+  'Alquiler',
+  'Otros',
+]
 
 const MESES = [
   'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
 ]
 
-function getLastDay(year, month) {
-  return new Date(year, month + 1, 0).getDate()
+const formVacio = {
+  fecha: '',
+  concepto: '',
+  descripcion: '',
+  monto: '',
+}
+
+function getHoyAR() {
+  return new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' })
 }
 
 function formatPeso(valor) {
@@ -40,23 +44,21 @@ function formatFecha(iso) {
   return `${d}/${m}/${y}`
 }
 
-export default function Nomina() {
+function getLastDay(year, month) {
+  return new Date(year, month + 1, 0).getDate()
+}
+
+export default function Gastos() {
   const router = useRouter()
   const [listo, setListo] = useState(false)
-  const [isUnlocked, setIsUnlocked] = useState(false)
-  const [passInput, setPassInput] = useState('')
-  const [passError, setPassError] = useState(false)
 
   const [registros, setRegistros] = useState([])
-  const [empleados, setEmpleados] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [fechaDesde, setFechaDesde] = useState('')
   const [fechaHasta, setFechaHasta] = useState('')
   const [mesActivo, setMesActivo] = useState(null)
-
-  const anioActual = new Date().getFullYear()
 
   const [modalAbierto, setModalAbierto] = useState(false)
   const [modoEdicion, setModoEdicion] = useState(false)
@@ -66,25 +68,14 @@ export default function Nomina() {
   const [form, setForm] = useState(formVacio)
   const [eliminandoId, setEliminandoId] = useState(null)
 
+  const anioActual = new Date().getFullYear()
+
   const fetchRegistros = useCallback(async () => {
     try {
       const { data, error } = await supabase
-        .from('nomina')
-        .select(`
-          id,
-          fecha,
-          pago_hora,
-          horas_trabajadas,
-          detalle_otros,
-          total_pago,
-          empleados (
-            id,
-            nombre,
-            cargo
-          )
-        `)
+        .from('gastos')
+        .select('id, fecha, concepto, descripcion, monto')
         .order('fecha', { ascending: false })
-
       if (error) throw error
       setRegistros(data)
     } catch (err) {
@@ -92,14 +83,6 @@ export default function Nomina() {
     } finally {
       setLoading(false)
     }
-  }, [])
-
-  const fetchEmpleados = useCallback(async () => {
-    const { data } = await supabase
-      .from('empleados')
-      .select('id, nombre, cargo')
-      .order('nombre', { ascending: true })
-    if (data) setEmpleados(data)
   }, [])
 
   useEffect(() => {
@@ -118,22 +101,7 @@ export default function Nomina() {
   useEffect(() => {
     if (!listo) return
     fetchRegistros()
-    fetchEmpleados()
-  }, [listo, fetchRegistros, fetchEmpleados])
-
-  const registrosFiltrados = registros.filter((r) => {
-    const term = searchTerm.toLowerCase()
-    const matchText = !term || (
-      r.empleados?.nombre?.toLowerCase().includes(term) ||
-      r.empleados?.cargo?.toLowerCase().includes(term) ||
-      r.detalle_otros?.toLowerCase().includes(term)
-    )
-    const matchDesde = !fechaDesde || r.fecha >= fechaDesde
-    const matchHasta = !fechaHasta || r.fecha <= fechaHasta
-    return matchText && matchDesde && matchHasta
-  })
-
-  const totalSemana = registrosFiltrados.reduce((acc, r) => acc + (Number(r.total_pago) || 0), 0)
+  }, [listo, fetchRegistros])
 
   function seleccionarMes(idx) {
     const mes = String(idx + 1).padStart(2, '0')
@@ -151,22 +119,22 @@ export default function Nomina() {
     setMesActivo(null)
   }
 
+  const registrosFiltrados = registros.filter((r) => {
+    const term = searchTerm.toLowerCase()
+    const matchText = !term || (
+      r.concepto?.toLowerCase().includes(term) ||
+      r.descripcion?.toLowerCase().includes(term)
+    )
+    const matchDesde = !fechaDesde || r.fecha >= fechaDesde
+    const matchHasta = !fechaHasta || r.fecha <= fechaHasta
+    return matchText && matchDesde && matchHasta
+  })
+
+  const totalGastos = registrosFiltrados.reduce((acc, r) => acc + (Number(r.monto) || 0), 0)
+
   function handleChange(e) {
     const { name, value } = e.target
-    setForm((prev) => {
-      const next = { ...prev, [name]: value }
-      if (name === 'pago_hora' || name === 'horas_trabajadas' || name === 'remunerativo') {
-        const ph = name === 'pago_hora' ? value : prev.pago_hora
-        const ht = name === 'horas_trabajadas' ? value : prev.horas_trabajadas
-        const rem = name === 'remunerativo' ? value : prev.remunerativo
-        if (ph !== '' && ht !== '') {
-          const base = parseFloat(ph || 0) * parseFloat(ht || 0)
-          const extra = parseFloat(rem || 0)
-          next.total_pago = (base + extra).toFixed(2)
-        }
-      }
-      return next
-    })
+    setForm((prev) => ({ ...prev, [name]: value }))
   }
 
   function abrirModalNuevo() {
@@ -182,12 +150,9 @@ export default function Nomina() {
     setIdEditando(r.id)
     setForm({
       fecha: r.fecha || '',
-      id_empleado: r.empleados?.id ?? '',
-      pago_hora: r.pago_hora ?? '',
-      horas_trabajadas: r.horas_trabajadas ?? '',
-      remunerativo: r.remunerativo ?? '',
-      detalle_otros: r.detalle_otros || '',
-      total_pago: r.total_pago ?? '',
+      concepto: r.concepto || '',
+      descripcion: r.descripcion || '',
+      monto: r.monto ?? '',
     })
     setErrorForm(null)
     setModalAbierto(true)
@@ -199,34 +164,26 @@ export default function Nomina() {
 
   async function handleGuardar(e) {
     e.preventDefault()
-
-    if (!form.fecha || !form.id_empleado || form.pago_hora === '' || form.horas_trabajadas === '') {
-      setErrorForm('Fecha, empleado, pago por hora y horas trabajadas son obligatorios.')
+    if (!form.fecha || !form.concepto || form.monto === '') {
+      setErrorForm('Fecha, concepto y monto son obligatorios.')
       return
     }
-
     setGuardando(true)
     setErrorForm(null)
-
     try {
       const payload = {
         fecha: form.fecha,
-        id_empleado: Number(form.id_empleado),
-        pago_hora: parseFloat(form.pago_hora),
-        horas_trabajadas: parseFloat(form.horas_trabajadas),
-        remunerativo: form.remunerativo !== '' ? parseFloat(form.remunerativo) : null,
-        detalle_otros: form.detalle_otros.trim() || null,
-        total_pago: parseFloat(form.total_pago),
+        concepto: form.concepto,
+        descripcion: form.descripcion.trim() || null,
+        monto: parseFloat(form.monto),
       }
-
       if (modoEdicion) {
-        const { error } = await supabase.from('nomina').update(payload).eq('id', idEditando)
+        const { error } = await supabase.from('gastos').update(payload).eq('id', idEditando)
         if (error) throw error
       } else {
-        const { error } = await supabase.from('nomina').insert([payload])
+        const { error } = await supabase.from('gastos').insert([payload])
         if (error) throw error
       }
-
       await fetchRegistros()
       setModalAbierto(false)
     } catch (err) {
@@ -237,12 +194,11 @@ export default function Nomina() {
   }
 
   async function handleEliminar(id) {
-    const confirmado = window.confirm('¿Estás seguro de eliminar este registro de nómina?')
+    const confirmado = window.confirm('¿Estás seguro de eliminar este gasto?')
     if (!confirmado) return
-
     setEliminandoId(id)
     try {
-      const { error } = await supabase.from('nomina').delete().eq('id', id)
+      const { error } = await supabase.from('gastos').delete().eq('id', id)
       if (error) throw error
       await fetchRegistros()
     } catch (err) {
@@ -263,70 +219,19 @@ export default function Nomina() {
     )
   }
 
-  if (!isUnlocked) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh] px-4">
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-xl p-8 w-full max-w-sm text-center">
-          <div className="flex justify-center mb-4">
-            <div className="w-14 h-14 rounded-full bg-orange-100 flex items-center justify-center">
-              <svg className="w-7 h-7 text-[#FF7900]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V7a4.5 4.5 0 10-9 0v3.5M5 10.5h14a1 1 0 011 1V20a1 1 0 01-1 1H5a1 1 0 01-1-1v-8.5a1 1 0 011-1z" />
-              </svg>
-            </div>
-          </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-1">Módulo Protegido</h2>
-          <p className="text-gray-500 text-sm mb-6">Ingresá la contraseña para acceder a Nómina</p>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault()
-              if (passInput === 'lolaquispe') {
-                setIsUnlocked(true)
-                setPassError(false)
-              } else {
-                setPassError(true)
-                setPassInput('')
-              }
-            }}
-            className="space-y-4"
-          >
-            <input
-              type="password"
-              value={passInput}
-              onChange={(e) => { setPassInput(e.target.value); setPassError(false) }}
-              placeholder="Contraseña"
-              autoFocus
-              className={`w-full bg-gray-50 border rounded-lg px-4 py-2.5 text-gray-900 text-center tracking-widest focus:outline-none focus:ring-2 focus:ring-primary ${
-                passError ? 'border-red-400 bg-red-50' : 'border-gray-200'
-              }`}
-            />
-            {passError && (
-              <p className="text-red-500 text-sm">Contraseña incorrecta. Intentá de nuevo.</p>
-            )}
-            <button
-              type="submit"
-              className="w-full bg-primary hover:bg-primary-600 text-white font-medium py-2.5 rounded-lg transition-colors shadow-lg shadow-primary/30"
-            >
-              Desbloquear
-            </button>
-          </form>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div>
-      <h2 className="text-2xl font-bold text-primary mb-1">Nómina Semanal</h2>
-      <p className="text-gray-500 mb-6 text-sm">Registro de pagos y horas trabajadas</p>
+      <h2 className="text-2xl font-bold text-primary mb-1">Gastos</h2>
+      <p className="text-gray-500 mb-6 text-sm">Registro de salidas de dinero — nafta, materiales, viáticos y más</p>
 
-      {/* Tarjeta Total Semana */}
+      {/* Tarjeta Total */}
       <div className="mb-6 bg-[#FF7900] rounded-2xl p-5 flex items-center justify-between shadow-lg shadow-orange-200/50">
         <div>
-          <p className="text-orange-100 text-sm font-medium uppercase tracking-wider">Total Semana</p>
+          <p className="text-orange-100 text-sm font-medium uppercase tracking-wider">Total de Gastos</p>
           <p className="text-white text-4xl font-bold mt-1">
             {loading
               ? '...'
-              : totalSemana.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 2 })
+              : totalGastos.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 2 })
             }
           </p>
           {(searchTerm || fechaDesde || fechaHasta) && (
@@ -341,13 +246,14 @@ export default function Nomina() {
         </div>
         <div className="opacity-20">
           <svg className="w-20 h-20 text-white" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/>
+            <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z" />
           </svg>
         </div>
       </div>
 
-      <div className="flex flex-wrap items-end gap-3 mb-4">
-        {/* Búsqueda por texto */}
+      {/* Filtros superiores */}
+      <div className="flex flex-wrap items-end gap-3 mb-3">
+        {/* Búsqueda */}
         <div className="flex flex-col gap-1 w-full sm:w-64">
           <label className="text-xs font-medium text-gray-500">Buscar</label>
           <div className="relative">
@@ -361,7 +267,7 @@ export default function Nomina() {
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Nombre, cargo, detalle..."
+              placeholder="Concepto o descripción..."
               className="w-full bg-gray-50 border border-gray-200 rounded-lg pl-9 pr-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
@@ -389,7 +295,7 @@ export default function Nomina() {
           />
         </div>
 
-        {/* Botón limpiar filtros — solo visible si hay algún filtro activo */}
+        {/* Limpiar filtros */}
         {(searchTerm || fechaDesde || fechaHasta) && (
           <div className="flex flex-col gap-1 w-full sm:w-auto">
             <label className="text-xs font-medium text-transparent select-none">·</label>
@@ -405,13 +311,13 @@ export default function Nomina() {
           </div>
         )}
 
-        {/* Botón nuevo registro — empujado a la derecha en desktop */}
+        {/* Botón nuevo gasto */}
         <div className="flex-1 flex justify-end">
           <button
             onClick={abrirModalNuevo}
-            className="bg-primary hover:bg-primary-600 text-white font-medium px-4 py-2 rounded-lg transition-colors shadow-lg shadow-primary/30 h-[38px]"
+            className="bg-primary hover:bg-primary-600 text-white font-medium px-4 py-2 rounded-lg transition-colors shadow-lg shadow-primary/30 h-[38px] whitespace-nowrap"
           >
-            ➕ Nuevo Registro
+            + Nuevo Gasto
           </button>
         </div>
       </div>
@@ -442,7 +348,7 @@ export default function Nomina() {
       {loading && (
         <div className="text-center py-16 text-gray-500">
           <div className="inline-block w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mb-3" />
-          <p>Cargando nómina...</p>
+          <p>Cargando gastos...</p>
         </div>
       )}
 
@@ -459,32 +365,30 @@ export default function Nomina() {
             <thead>
               <tr className="bg-white text-gray-400 uppercase text-xs tracking-wider border-b border-gray-200">
                 <th className="px-5 py-3 text-left">Fecha</th>
-                <th className="px-5 py-3 text-left">Nombre</th>
-                <th className="px-5 py-3 text-left">Ocupación</th>
-                <th className="px-5 py-3 text-right">Pago x Hora</th>
-                <th className="px-5 py-3 text-right">Hs. Trabajadas</th>
-                <th className="px-5 py-3 text-left">Detalles / Otros</th>
-                <th className="px-5 py-3 text-right font-semibold text-gray-600">Total</th>
+                <th className="px-5 py-3 text-left">Concepto</th>
+                <th className="px-5 py-3 text-left">Descripción</th>
+                <th className="px-5 py-3 text-right font-semibold text-gray-600">Monto</th>
                 <th className="px-5 py-3 text-left">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
               {registrosFiltrados.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-5 py-10 text-center text-gray-400">
-                    No se encontraron registros
+                  <td colSpan={5} className="px-5 py-10 text-center text-gray-400">
+                    No se encontraron gastos
                   </td>
                 </tr>
               ) : (
                 registrosFiltrados.map((r) => (
                   <tr key={r.id} className="bg-white hover:bg-gray-50 transition-colors">
                     <td className="px-5 py-3 text-gray-700 whitespace-nowrap">{formatFecha(r.fecha)}</td>
-                    <td className="px-5 py-3 font-medium text-gray-900 whitespace-nowrap">{r.empleados?.nombre ?? '—'}</td>
-                    <td className="px-5 py-3 text-primary whitespace-nowrap">{r.empleados?.cargo ?? '—'}</td>
-                    <td className="px-5 py-3 text-gray-700 whitespace-nowrap text-right">{formatPeso(r.pago_hora)}</td>
-                    <td className="px-5 py-3 text-gray-700 whitespace-nowrap text-right">{r.horas_trabajadas ?? '—'}</td>
-                    <td className="px-5 py-3 text-gray-500 max-w-[200px] truncate">{r.detalle_otros || '—'}</td>
-                    <td className="px-5 py-3 whitespace-nowrap text-right font-semibold text-[#FF7900]">{formatPeso(r.total_pago)}</td>
+                    <td className="px-5 py-3 whitespace-nowrap">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-700">
+                        {r.concepto || '—'}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3 text-gray-500 max-w-[260px] truncate">{r.descripcion || '—'}</td>
+                    <td className="px-5 py-3 whitespace-nowrap text-right font-semibold text-[#FF7900]">{formatPeso(r.monto)}</td>
                     <td className="px-5 py-3">
                       <div className="flex gap-2">
                         <button
@@ -509,11 +413,11 @@ export default function Nomina() {
             {registrosFiltrados.length > 0 && (
               <tfoot>
                 <tr className="bg-orange-50 border-t-2 border-orange-200">
-                  <td colSpan={6} className="px-5 py-3 text-right text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                  <td colSpan={3} className="px-5 py-3 text-right text-sm font-semibold text-gray-600 uppercase tracking-wider">
                     Total mostrado
                   </td>
                   <td className="px-5 py-3 text-right font-bold text-[#FF7900] text-base">
-                    {totalSemana.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 2 })}
+                    {totalGastos.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 2 })}
                   </td>
                   <td />
                 </tr>
@@ -523,14 +427,15 @@ export default function Nomina() {
         </div>
       )}
 
+      {/* Modal nuevo / editar */}
       {modalAbierto && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 overflow-y-auto">
           <div className="bg-white border border-gray-200 rounded-xl w-full max-w-md p-6 shadow-2xl my-8">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-primary">
-                {modoEdicion ? 'Editar Registro' : 'Nuevo Registro'}
+                {modoEdicion ? 'Editar Gasto' : 'Nuevo Gasto'}
               </h2>
-              <button onClick={cerrarModal} className="text-gray-400 hover:text-gray-900 transition-colors">
+              <button onClick={cerrarModal} className="text-gray-400 hover:text-gray-900 transition-colors text-xl leading-none">
                 ✕
               </button>
             </div>
@@ -548,89 +453,38 @@ export default function Nomina() {
               </div>
 
               <div>
-                <label className="block text-sm text-gray-500 mb-1">Empleado</label>
+                <label className="block text-sm text-gray-500 mb-1">Concepto</label>
                 <select
-                  name="id_empleado"
-                  value={form.id_empleado}
+                  name="concepto"
+                  value={form.concepto}
                   onChange={handleChange}
                   className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary"
                 >
-                  <option value="">— Seleccioná un empleado —</option>
-                  {empleados.map((emp) => (
-                    <option key={emp.id} value={emp.id}>
-                      {emp.nombre} — {emp.cargo}
-                    </option>
+                  <option value="">— Seleccioná un concepto —</option>
+                  {CONCEPTOS.map((c) => (
+                    <option key={c} value={c}>{c}</option>
                   ))}
                 </select>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm text-gray-500 mb-1">Pago por Hora ($)</label>
-                  <input
-                    type="number"
-                    name="pago_hora"
-                    value={form.pago_hora}
-                    onChange={handleChange}
-                    min="0"
-                    step="0.01"
-                    className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="0.00"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm text-gray-500 mb-1">Horas Trabajadas</label>
-                  <input
-                    type="number"
-                    name="horas_trabajadas"
-                    value={form.horas_trabajadas}
-                    onChange={handleChange}
-                    min="0"
-                    step="0.5"
-                    className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="0"
-                  />
-                </div>
-              </div>
-
               <div>
-                <label className="block text-sm text-gray-500 mb-1">
-                  Remunerativo / Aguinaldo ($)
-                  <span className="ml-1 text-xs text-orange-400">— se suma al total</span>
-                </label>
-                <input
-                  type="number"
-                  name="remunerativo"
-                  value={form.remunerativo}
-                  onChange={handleChange}
-                  min="0"
-                  step="0.01"
-                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="0.00"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm text-gray-500 mb-1">Detalles / Otros</label>
+                <label className="block text-sm text-gray-500 mb-1">Descripción</label>
                 <input
                   type="text"
-                  name="detalle_otros"
-                  value={form.detalle_otros}
+                  name="descripcion"
+                  value={form.descripcion}
                   onChange={handleChange}
                   className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Ej: bono, viáticos, horas extra..."
+                  placeholder="Ej: Carga de combustible para obra Palermo..."
                 />
               </div>
 
               <div>
-                <label className="block text-sm text-gray-500 mb-1">
-                  Total Pago ($)
-                  <span className="ml-1 text-xs text-orange-400">— autocalculado, editable</span>
-                </label>
+                <label className="block text-sm text-gray-500 mb-1">Monto ($)</label>
                 <input
                   type="number"
-                  name="total_pago"
-                  value={form.total_pago}
+                  name="monto"
+                  value={form.monto}
                   onChange={handleChange}
                   min="0"
                   step="0.01"

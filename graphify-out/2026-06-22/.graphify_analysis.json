@@ -1,0 +1,235 @@
+{
+  "communities": {
+    "0": [
+      "package",
+      "package_devdependencies",
+      "package_devdependencies_eslint",
+      "package_devdependencies_eslint_config_next",
+      "package_devdependencies_tailwindcss",
+      "package_devdependencies_tailwindcss_postcss",
+      "package_name",
+      "package_private",
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_dev",
+      "package_scripts_lint",
+      "package_scripts_start",
+      "package_version"
+    ],
+    "1": [
+      "presupuestos_page",
+      "presupuestos_page_badge_color",
+      "presupuestos_page_estados",
+      "presupuestos_page_formatfecha",
+      "presupuestos_page_formatprecio",
+      "presupuestos_page_gethoy",
+      "presupuestos_page_itemvacio",
+      "presupuestos_page_mock_presupuesto",
+      "presupuestos_page_presupuestos",
+      "presupuestos_plantillapdf",
+      "presupuestos_plantillapdf_fmt",
+      "presupuestos_plantillapdf_plantillapdf"
+    ],
+    "2": [
+      "gastos_page",
+      "gastos_page_conceptos",
+      "gastos_page_formatfecha",
+      "gastos_page_formatpeso",
+      "gastos_page_formvacio",
+      "gastos_page_gastos",
+      "gastos_page_gethoy",
+      "gastos_page_getlastday",
+      "gastos_page_meses"
+    ],
+    "3": [
+      "nomina_page",
+      "nomina_page_formatfecha",
+      "nomina_page_formatpeso",
+      "nomina_page_formvacio",
+      "nomina_page_gethoy",
+      "nomina_page_getlastday",
+      "nomina_page_meses",
+      "nomina_page_nomina"
+    ],
+    "4": [
+      "id_page_badge_color",
+      "id_page_editarpresupuesto",
+      "id_page_estados",
+      "id_page_itemvacio",
+      "src_app_presupuestos_id_page_js_id_page",
+      "src_app_presupuestos_id_page_js_id_page_formatfecha",
+      "src_app_presupuestos_id_page_js_id_page_formatprecio"
+    ],
+    "5": [
+      "package_dependencies",
+      "package_dependencies_html2canvas",
+      "package_dependencies_jspdf",
+      "package_dependencies_next",
+      "package_dependencies_react",
+      "package_dependencies_react_dom",
+      "package_dependencies_supabase_supabase_js"
+    ],
+    "6": [
+      "id_page_colorestado",
+      "id_page_colorestadopresupuesto",
+      "id_page_fichaobra",
+      "src_app_obras_id_page_js_id_page",
+      "src_app_obras_id_page_js_id_page_formatfecha",
+      "src_app_obras_id_page_js_id_page_formatprecio"
+    ],
+    "7": [
+      "obras_page",
+      "obras_page_estados",
+      "obras_page_formvacio",
+      "obras_page_gethoy",
+      "obras_page_obras"
+    ],
+    "8": [
+      "catalogo_page",
+      "catalogo_page_catalogoprecios",
+      "catalogo_page_categorias",
+      "catalogo_page_form_vacio"
+    ],
+    "9": [
+      "inventario_page",
+      "inventario_page_formvacio",
+      "inventario_page_gethoy",
+      "inventario_page_inventario"
+    ],
+    "10": [
+      "jsconfig",
+      "jsconfig_compileroptions",
+      "jsconfig_compileroptions_paths",
+      "jsconfig_paths"
+    ],
+    "11": [
+      "app_layout",
+      "app_layout_navitems",
+      "app_layout_rootlayout"
+    ],
+    "12": [
+      "app_page",
+      "app_page_cards",
+      "app_page_dashboard"
+    ],
+    "13": [
+      "lib_supabase",
+      "lib_supabase_cookiestorage",
+      "lib_supabase_supabase"
+    ],
+    "14": [
+      "src_proxy",
+      "src_proxy_config",
+      "src_proxy_proxy"
+    ],
+    "15": [
+      "asignaciones_page",
+      "asignaciones_page_asignaciones"
+    ],
+    "16": [
+      "clientes_page",
+      "clientes_page_clientes"
+    ],
+    "17": [
+      "eslint_config",
+      "eslint_config_eslintconfig"
+    ],
+    "18": [
+      "login_page",
+      "login_page_loginpage"
+    ],
+    "19": [
+      "next_config",
+      "next_config_nextconfig"
+    ],
+    "20": [
+      "postcss_config",
+      "postcss_config_config"
+    ],
+    "21": [
+      "tecnicos_page",
+      "tecnicos_page_tecnicos"
+    ]
+  },
+  "cohesion": {
+    "0": 0.14285714285714285,
+    "1": 0.22727272727272727,
+    "2": 0.25,
+    "3": 0.2857142857142857,
+    "4": 0.38095238095238093,
+    "5": 0.2857142857142857,
+    "6": 0.4666666666666667,
+    "7": 0.4,
+    "8": 0.5,
+    "9": 0.5,
+    "10": 0.5,
+    "11": 0.6666666666666666,
+    "12": 0.6666666666666666,
+    "13": 0.6666666666666666,
+    "14": 0.6666666666666666,
+    "15": 1.0,
+    "16": 1.0,
+    "17": 1.0,
+    "18": 1.0,
+    "19": 1.0,
+    "20": 1.0,
+    "21": 1.0
+  },
+  "gods": [
+    {
+      "id": "package_scripts",
+      "label": "scripts",
+      "degree": 5
+    },
+    {
+      "id": "presupuestos_page_presupuestos",
+      "label": "Presupuestos()",
+      "degree": 4
+    },
+    {
+      "id": "id_page_fichaobra",
+      "label": "FichaObra()",
+      "degree": 3
+    },
+    {
+      "id": "id_page_editarpresupuesto",
+      "label": "EditarPresupuesto()",
+      "degree": 3
+    },
+    {
+      "id": "jsconfig_compileroptions",
+      "label": "compilerOptions",
+      "degree": 2
+    },
+    {
+      "id": "jsconfig_compileroptions_paths",
+      "label": "paths",
+      "degree": 2
+    },
+    {
+      "id": "id_page_colorestado",
+      "label": "colorEstado()",
+      "degree": 2
+    },
+    {
+      "id": "src_app_obras_id_page_js_id_page_formatfecha",
+      "label": "formatFecha()",
+      "degree": 2
+    },
+    {
+      "id": "src_app_presupuestos_id_page_js_id_page_formatprecio",
+      "label": "formatPrecio()",
+      "degree": 2
+    },
+    {
+      "id": "src_app_presupuestos_id_page_js_id_page_formatfecha",
+      "label": "formatFecha()",
+      "degree": 2
+    }
+  ],
+  "surprises": [],
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
+}

@@ -14,6 +14,7 @@ const navItems = [
   { href: '/clientes', label: 'Clientes', icon: '👥' },
   { href: '/inventario', label: 'Inventario', icon: '📦' },
   { href: '/nomina', label: 'Nómina', icon: '💵' },
+  { href: '/gastos', label: 'Gastos', icon: '💸' },
   { href: '/catalogo', label: 'Catálogo de Precios', icon: '🏷️' },
   { href: '/presupuestos', label: 'Presupuestos', icon: '📄' },
 ]

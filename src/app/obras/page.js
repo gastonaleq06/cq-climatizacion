@@ -6,6 +6,10 @@ import { supabase } from '@/lib/supabase'
 
 const ESTADOS = ['En Planificación', 'En Curso', 'Finalizada', 'Pausada']
 
+function getHoyAR() {
+  return new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' })
+}
+
 const formVacio = { nombre_obra: '', fecha_inicio: '', estado: ESTADOS[0], id_cliente: '' }
 
 export default function Obras() {
@@ -68,7 +72,7 @@ export default function Obras() {
   function abrirModalNuevo() {
     setModoEdicion(false)
     setIdEditando(null)
-    setForm(formVacio)
+    setForm({ ...formVacio, fecha_inicio: getHoyAR() })
     setErrorForm(null)
     setModalAbierto(true)
   }

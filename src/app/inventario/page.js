@@ -3,9 +3,8 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 
-const ESTADO_STYLES = {
-  'En stock': 'bg-green-100 text-green-700',
-  'Vendido': 'bg-gray-100 text-gray-500',
+function getHoyAR() {
+  return new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' })
 }
 
 const formVacio = {
@@ -42,6 +41,12 @@ export default function Inventario() {
   const [itemHistorial, setItemHistorial] = useState(null)
   const [historial, setHistorial] = useState([])
   const [loadingHistorial, setLoadingHistorial] = useState(false)
+
+  // Estado para edición inline de movimientos
+  const [editandoMovId, setEditandoMovId] = useState(null)
+  const [cantidadEditando, setCantidadEditando] = useState('')
+  const [guardandoEdicion, setGuardandoEdicion] = useState(false)
+  const [errorEdicion, setErrorEdicion] = useState(null)
 
   async function fetchItems() {
     try {
@@ -163,28 +168,36 @@ export default function Inventario() {
     }
   }
 
-  async function abrirHistorial(item) {
-    setItemHistorial(item)
-    setHistorial([])
+  async function fetchHistorial(inventarioId) {
     setLoadingHistorial(true)
-    setModalHistorial(true)
     const { data, error } = await supabase
       .from('movimientos_inventario')
       .select('id, fecha, cantidad, obras(nombre_obra)')
-      .eq('inventario_id', item.id)
+      .eq('inventario_id', inventarioId)
       .order('fecha', { ascending: false })
     if (!error && data) setHistorial(data)
     setLoadingHistorial(false)
   }
 
+  async function abrirHistorial(item) {
+    setItemHistorial(item)
+    setHistorial([])
+    setEditandoMovId(null)
+    setErrorEdicion(null)
+    setModalHistorial(true)
+    await fetchHistorial(item.id)
+  }
+
   function cerrarHistorial() {
     setModalHistorial(false)
     setItemHistorial(null)
+    setEditandoMovId(null)
+    setErrorEdicion(null)
   }
 
   function abrirDespacho(item) {
     setItemDespacho(item)
-    setDespacho({ cantidad: '', obra_id: obras[0]?.id?.toString() || '', fecha: '' })
+    setDespacho({ cantidad: '', obra_id: obras[0]?.id?.toString() || '', fecha: getHoyAR() })
     setErrorDespacho(null)
     setModalDespacho(true)
   }
@@ -242,6 +255,57 @@ export default function Inventario() {
       setErrorDespacho(err.message)
     } finally {
       setDespachando(false)
+    }
+  }
+
+  async function handleGuardarEdicionMov(mov) {
+    const nuevaCantidad = parseInt(cantidadEditando, 10)
+    if (!nuevaCantidad || nuevaCantidad < 1) {
+      setErrorEdicion('La cantidad debe ser mayor a 0.')
+      return
+    }
+
+    setGuardandoEdicion(true)
+    setErrorEdicion(null)
+
+    try {
+      // Leer stock actual (fresco) antes de ajustar
+      const { data: invData, error: errInv } = await supabase
+        .from('inventario')
+        .select('cantidad')
+        .eq('id', itemHistorial.id)
+        .single()
+      if (errInv) throw errInv
+
+      const stockActual = invData.cantidad ?? 0
+      const delta = mov.cantidad - nuevaCantidad   // positivo = devuelve stock
+      const nuevoStock = stockActual + delta
+
+      // Actualizar el movimiento
+      const { error: errMov } = await supabase
+        .from('movimientos_inventario')
+        .update({ cantidad: nuevaCantidad })
+        .eq('id', mov.id)
+      if (errMov) throw errMov
+
+      // Actualizar el stock del producto
+      const { error: errUpd } = await supabase
+        .from('inventario')
+        .update({ cantidad: nuevoStock })
+        .eq('id', itemHistorial.id)
+      if (errUpd) throw errUpd
+
+      // Actualizar stock en el objeto local del historial para que el header se refresque
+      setItemHistorial(prev => ({ ...prev, cantidad: nuevoStock }))
+      setEditandoMovId(null)
+
+      // Refrescar historial y tabla principal
+      await fetchHistorial(itemHistorial.id)
+      await fetchItems()
+    } catch (err) {
+      setErrorEdicion(err.message)
+    } finally {
+      setGuardandoEdicion(false)
     }
   }
 
@@ -336,8 +400,12 @@ export default function Inventario() {
                       </span>
                     </td>
                     <td className="px-5 py-3 whitespace-nowrap">
-                      <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold ${ESTADO_STYLES[item.estado] ?? 'bg-gray-100 text-gray-500'}`}>
-                        {item.estado}
+                      <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                        item.cantidad > 0
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-red-100 text-red-800'
+                      }`}>
+                        {item.cantidad > 0 ? 'En stock' : 'Agotado'}
                       </span>
                     </td>
                     <td className="px-5 py-3">
@@ -382,11 +450,16 @@ export default function Inventario() {
       {/* Modal historial de movimientos */}
       {modalHistorial && itemHistorial && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white border border-gray-200 rounded-xl w-full max-w-lg p-6 shadow-2xl">
+          <div className="bg-white border border-gray-200 rounded-xl w-full max-w-xl p-6 shadow-2xl">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-lg font-semibold text-primary">Historial de Movimientos</h2>
-                <p className="text-xs text-gray-400 mt-0.5">{itemHistorial.nombre_producto}</p>
+                <h2 className="text-lg font-semibold text-primary">Historial de Despachos</h2>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  {itemHistorial.nombre_producto}
+                  <span className="ml-2 text-gray-500">
+                    · Stock actual: <strong className="text-gray-700">{itemHistorial.cantidad ?? '—'}</strong>
+                  </span>
+                </p>
               </div>
               <button onClick={cerrarHistorial} className="text-gray-400 hover:text-gray-900 transition-colors">
                 ✕
@@ -411,19 +484,71 @@ export default function Inventario() {
                         <th className="px-4 py-2.5 text-left">Fecha</th>
                         <th className="px-4 py-2.5 text-left">Obra destino</th>
                         <th className="px-4 py-2.5 text-right">Cant. despachada</th>
+                        <th className="px-4 py-2.5 text-left">Editar</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
                       {historial.map(mov => (
                         <tr key={mov.id} className="bg-white">
-                          <td className="px-4 py-2.5 text-gray-700">{mov.fecha}</td>
-                          <td className="px-4 py-2.5 font-medium text-gray-900">{mov.obras?.nombre_obra ?? '—'}</td>
-                          <td className="px-4 py-2.5 text-right font-semibold text-primary">{mov.cantidad}</td>
+                          <td className="px-4 py-2.5 text-gray-700 whitespace-nowrap">{mov.fecha}</td>
+                          <td className="px-4 py-2.5 font-medium text-gray-900 whitespace-nowrap">
+                            {mov.obras?.nombre_obra ?? '—'}
+                          </td>
+                          <td className="px-4 py-2.5 text-right">
+                            {editandoMovId === mov.id ? (
+                              <input
+                                type="number"
+                                value={cantidadEditando}
+                                onChange={e => setCantidadEditando(e.target.value)}
+                                min="1"
+                                className="w-20 bg-gray-50 border border-primary rounded px-2 py-1 text-right text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                                autoFocus
+                              />
+                            ) : (
+                              <span className="font-semibold text-primary">{mov.cantidad}</span>
+                            )}
+                          </td>
+                          <td className="px-4 py-2.5">
+                            {editandoMovId === mov.id ? (
+                              <div className="flex gap-1.5">
+                                <button
+                                  onClick={() => handleGuardarEdicionMov(mov)}
+                                  disabled={guardandoEdicion}
+                                  className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-xs font-medium px-2.5 py-1 rounded transition-colors"
+                                >
+                                  {guardandoEdicion ? '...' : 'Guardar'}
+                                </button>
+                                <button
+                                  onClick={() => { setEditandoMovId(null); setErrorEdicion(null) }}
+                                  disabled={guardandoEdicion}
+                                  className="text-gray-400 hover:text-gray-700 text-xs px-2 py-1 rounded transition-colors"
+                                >
+                                  Cancelar
+                                </button>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => {
+                                  setEditandoMovId(mov.id)
+                                  setCantidadEditando(String(mov.cantidad))
+                                  setErrorEdicion(null)
+                                }}
+                                className="text-sky-600 hover:text-sky-800 text-xs font-medium transition-colors"
+                              >
+                                ✏️ Editar
+                              </button>
+                            )}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
+
+                {errorEdicion && (
+                  <p className="text-red-600 text-sm font-mono mb-3">{errorEdicion}</p>
+                )}
+
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-500">Total despachado</span>
                   <span className="font-bold text-gray-900">

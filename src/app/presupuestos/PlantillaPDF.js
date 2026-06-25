@@ -6,201 +6,252 @@ function fmt(valor) {
   return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(valor || 0)
 }
 
+const CARTA = `De acuerdo con lo solicitado, se envía la cotización correspondiente.
+Nuestros campos de acción:
+✓ Ingeniería en Climatización: Consultoría y desarrollo en proyectos (edificios, residencias, shoppings, colegios, clínicas, etc.).
+✓ Especialización en Sistemas HVAC (sistema VRF, sistemas 1 a 1, entre otros).
+✓ Especialización Sistemas de Agua (Chiller).
+✓ Provisión, fabricación y montaje de conductos de aire para climatización, ventilación y jacketing.
+✓ Mantenimiento de equipos.
+✓ Presurización de escaleras.
+✓ Tratamiento de aire para salas blancas (laboratorios, clínicas, entre otros).
+✓ Preinstalaciones para edificios, residencias e instituciones.
+CQ INGENIERIA EN CLIMATIZACION una Organización orientada a la satisfacción de sus Clientes ofreciendo soluciones eficientes, que trabaja con elevados estándares de calidad para la construcción y mantenimiento de relaciones de largo plazo tomando decisiones basadas en la Sustentabilidad y la Mejora Continua.
++ 20 años aportando soluciones en ingeniería en climatización`
+
+const LABEL = {
+  fontSize: '10px',
+  fontWeight: '700',
+  color: '#FF7900',
+  textTransform: 'uppercase',
+  letterSpacing: '0.08em',
+  marginBottom: '8px',
+}
+
+const PAGE = {
+  width: '794px',
+  height: '1123px',
+  backgroundColor: '#ffffff',
+  padding: '48px',
+  boxSizing: 'border-box',
+  position: 'relative',
+  overflow: 'hidden',
+}
+
+const DIVIDER = {
+  height: '4px',
+  background: 'linear-gradient(to right, #FF7900, #ffcc99)',
+  borderRadius: '2px',
+}
+
+const ACCENT_BOTTOM = {
+  position: 'absolute',
+  bottom: '0',
+  left: '0',
+  right: '0',
+  height: '6px',
+  background: 'linear-gradient(to right, #FF7900, #ffcc99)',
+}
+
 const PlantillaPDF = forwardRef(function PlantillaPDF({ presupuesto }, ref) {
-  const { numero, fecha, validez, cliente, items, subtotal, iva, total, terminos } = presupuesto
+  const { numero, fecha, cliente, obra, items = [], total, descripcionTareas, clienteObj } = presupuesto
+
+  const numStr = String(numero || 'S/N').padStart(3, '0')
 
   return (
-    <div
-      ref={ref}
-      style={{
-        width: '794px',
-        minHeight: '1123px',
-        backgroundColor: '#ffffff',
-        fontFamily: 'Arial, Helvetica, sans-serif',
-        fontSize: '13px',
-        color: '#1a1a1a',
-        padding: '48px',
-        boxSizing: 'border-box',
-        position: 'relative',
-      }}
-    >
-      {/* ── HEADER ── */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '28px' }}>
-        <img
-          src="/logo.png"
-          alt="CQ Ingeniería en Climatización"
-          style={{ height: '72px', objectFit: 'contain' }}
-          crossOrigin="anonymous"
-        />
-        <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: '34px', fontWeight: '800', color: '#FF7900', letterSpacing: '-0.5px', lineHeight: '1' }}>
-            PRESUPUESTO
-          </div>
-          <div style={{ fontSize: '14px', color: '#666', marginTop: '6px' }}>
-            N° <strong style={{ color: '#1a1a1a' }}>#{String(numero).padStart(3, '0')}</strong>
-          </div>
-          <div style={{ fontSize: '13px', color: '#666', marginTop: '2px' }}>
-            Fecha: <strong style={{ color: '#1a1a1a' }}>{fecha}</strong>
-          </div>
-          <div style={{ fontSize: '13px', color: '#666', marginTop: '2px' }}>
-            Validez: <strong style={{ color: '#1a1a1a' }}>{validez}</strong>
+    <div ref={ref} style={{ fontFamily: 'Arial, Helvetica, sans-serif', color: '#1a1a1a' }}>
+
+      {/* ══════════════════ PÁGINA 1 — INSTITUCIONAL ══════════════════ */}
+      <div style={PAGE}>
+
+        {/* Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '28px' }}>
+          <img
+            src="/logo.png"
+            alt="CQ en Climatización"
+            style={{ height: '68px', objectFit: 'contain' }}
+            crossOrigin="anonymous"
+          />
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontSize: '30px', fontWeight: '800', color: '#FF7900', letterSpacing: '-0.5px', lineHeight: '1' }}>
+              COTIZACIÓN
+            </div>
+            <div style={{ fontSize: '14px', color: '#555', marginTop: '6px' }}>
+              N° <strong style={{ color: '#1a1a1a' }}>#{numStr}</strong>
+            </div>
+            <div style={{ fontSize: '13px', color: '#555', marginTop: '2px' }}>
+              Fecha: <strong style={{ color: '#1a1a1a' }}>{fecha}</strong>
+            </div>
           </div>
         </div>
+
+        <div style={{ ...DIVIDER, marginBottom: '28px' }} />
+
+        {/* Emisor + Atención */}
+        <div style={{ display: 'flex', marginBottom: '28px' }}>
+          <div style={{ flex: 1, marginRight: '20px', backgroundColor: '#f7f7f7', borderRadius: '8px', padding: '16px 20px' }}>
+            <div style={LABEL}>Emisor</div>
+            <div style={{ fontWeight: '700', fontSize: '14px', marginBottom: '6px' }}>CQ INGENIERIA EN CLIMATIZACION</div>
+            <div style={{ color: '#555', lineHeight: '1.9', fontSize: '12px' }}>
+              <div>Ing. Cesar Rodrigo Quispe</div>
+              <div>Los Durazneros 1054, B° Tres Cerritos, Salta Capital</div>
+              <div>Salta, Argentina</div>
+              <div>empresa@cqingclima.com</div>
+              <div>TEL: 3873125555</div>
+            </div>
+          </div>
+
+          <div style={{ flex: 1, backgroundColor: '#fff8f2', border: '1.5px solid #FFD4A8', borderRadius: '8px', padding: '16px 20px' }}>
+            <div style={LABEL}>Atención</div>
+            <div style={{ fontWeight: '700', fontSize: '14px', marginBottom: '4px' }}>{clienteObj?.nombre_empresa || cliente || '—'}</div>
+            <div style={{ color: '#555', lineHeight: '1.9', fontSize: '12px' }}>
+              {clienteObj?.cuit_empresa && <div>CUIT: {clienteObj.cuit_empresa}</div>}
+              {clienteObj?.contacto_nombre && <div>Contacto: {clienteObj.contacto_nombre}</div>}
+              {clienteObj?.contacto_telefono && <div>Tel: {clienteObj.contacto_telefono}</div>}
+              {clienteObj?.direccion_obra && <div>{clienteObj.direccion_obra}</div>}
+              {obra && <div>Obra: {obra}</div>}
+            </div>
+          </div>
+        </div>
+
+        {/* Carta de presentación */}
+        <div style={{ backgroundColor: '#f9f9f9', borderRadius: '8px', padding: '24px 28px', marginBottom: '28px' }}>
+          <div style={LABEL}>Estimado/a cliente</div>
+          <div style={{ fontSize: '13px', color: '#333', lineHeight: '2', whiteSpace: 'pre-line' }}>
+            {CARTA}
+          </div>
+        </div>
+
+        <div style={ACCENT_BOTTOM} />
       </div>
 
-      {/* ── DIVIDER NARANJA ── */}
-      <div style={{
-        height: '4px',
-        background: 'linear-gradient(to right, #FF7900, #ffcc99)',
-        borderRadius: '2px',
-        marginBottom: '28px',
-      }} />
+      {/* ══════════════════ PÁGINA 2 — PROPUESTA ECONÓMICA ══════════════════ */}
+      <div style={PAGE}>
 
-      {/* ── EMISOR + CLIENTE ── */}
-      <div style={{ display: 'flex', gap: '24px', marginBottom: '28px' }}>
-        <div style={{
-          flex: 1,
-          backgroundColor: '#f7f7f7',
-          borderRadius: '8px',
-          padding: '16px 20px',
-        }}>
-          <div style={{ fontSize: '10px', fontWeight: '700', color: '#FF7900', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>
-            Emisor
-          </div>
-          <div style={{ fontWeight: '700', fontSize: '14px', marginBottom: '6px' }}>
-            CQ Ingeniería en Climatización
-          </div>
-          <div style={{ color: '#555', lineHeight: '1.8', fontSize: '12px' }}>
-            <div>CUIT: 30-99999999-9</div>
-            <div>Ingresos Brutos: 12345678</div>
-            <div>Buenos Aires, Argentina</div>
-            <div>Tel: (011) 4999-0000</div>
+        {/* Mini-header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+          <div style={{ fontWeight: '800', fontSize: '17px', color: '#1a1a1a' }}>Propuesta Económica</div>
+          <div style={{ fontSize: '11px', color: '#aaa' }}>
+            Cotización N° #{numStr} — {fecha}
           </div>
         </div>
 
-        <div style={{
-          flex: 1,
-          backgroundColor: '#fff8f2',
-          border: '1.5px solid #FFD4A8',
-          borderRadius: '8px',
-          padding: '16px 20px',
-        }}>
-          <div style={{ fontSize: '10px', fontWeight: '700', color: '#FF7900', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>
-            Cliente
-          </div>
-          <div style={{ fontWeight: '700', fontSize: '14px', marginBottom: '6px' }}>
-            {cliente.nombre}
-          </div>
-          <div style={{ color: '#555', lineHeight: '1.8', fontSize: '12px' }}>
-            <div>{cliente.empresa}</div>
-            <div>CUIT: {cliente.cuit}</div>
-            {cliente.direccion && <div>{cliente.direccion}</div>}
-          </div>
-        </div>
-      </div>
+        <div style={{ ...DIVIDER, marginBottom: '22px' }} />
 
-      {/* ── TABLA DE ÍTEMS ── */}
-      <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '24px' }}>
-        <thead>
-          <tr style={{ backgroundColor: '#FF7900' }}>
-            <th style={{ padding: '11px 16px', textAlign: 'left', color: '#fff', fontWeight: '700', fontSize: '11px', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
-              Descripción
-            </th>
-            <th style={{ padding: '11px 16px', textAlign: 'center', color: '#fff', fontWeight: '700', fontSize: '11px', letterSpacing: '0.04em', textTransform: 'uppercase', width: '70px' }}>
-              Cant.
-            </th>
-            <th style={{ padding: '11px 16px', textAlign: 'right', color: '#fff', fontWeight: '700', fontSize: '11px', letterSpacing: '0.04em', textTransform: 'uppercase', width: '140px' }}>
-              P. Unitario
-            </th>
-            <th style={{ padding: '11px 16px', textAlign: 'right', color: '#fff', fontWeight: '700', fontSize: '11px', letterSpacing: '0.04em', textTransform: 'uppercase', width: '140px' }}>
-              Subtotal
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((item, i) => (
-            <tr
-              key={i}
-              style={{
-                backgroundColor: i % 2 === 0 ? '#ffffff' : '#fafafa',
-                borderBottom: '1px solid #ebebeb',
-              }}
-            >
-              <td style={{ padding: '11px 16px', lineHeight: '1.5' }}>
-                <div style={{ fontWeight: '500', color: '#1a1a1a' }}>{item.descripcion}</div>
-                {item.detalle && (
-                  <div style={{ fontSize: '11px', color: '#888', marginTop: '2px' }}>{item.detalle}</div>
-                )}
-              </td>
-              <td style={{ padding: '11px 16px', textAlign: 'center', color: '#555' }}>
-                {item.cantidad}
-              </td>
-              <td style={{ padding: '11px 16px', textAlign: 'right', fontFamily: 'monospace', color: '#555', fontSize: '12px' }}>
-                {fmt(item.precioUnitario)}
-              </td>
-              <td style={{ padding: '11px 16px', textAlign: 'right', fontFamily: 'monospace', fontWeight: '700', fontSize: '12px' }}>
-                {fmt(item.subtotal)}
-              </td>
+        {/* Tabla de ítems */}
+        <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '22px' }}>
+          <thead>
+            <tr style={{ backgroundColor: '#FF7900' }}>
+              {[
+                { label: 'Ítem',    w: '48px',  align: 'center' },
+                { label: 'Cant.',   w: '56px',  align: 'center' },
+                { label: 'Preinstalación / Servicio', w: undefined, align: 'left' },
+                { label: 'Subtotal', w: '130px', align: 'right' },
+              ].map(({ label, w, align }) => (
+                <th key={label} style={{
+                  padding: '10px 14px',
+                  textAlign: align,
+                  color: '#fff',
+                  fontWeight: '700',
+                  fontSize: '11px',
+                  letterSpacing: '0.04em',
+                  textTransform: 'uppercase',
+                  width: w,
+                }}>
+                  {label}
+                </th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {items.map((item, i) => (
+              <tr key={i} style={{ backgroundColor: i % 2 === 0 ? '#ffffff' : '#fafafa', borderBottom: '1px solid #ebebeb' }}>
+                <td style={{ padding: '11px 14px', textAlign: 'center', color: '#aaa', fontSize: '12px' }}>
+                  {i + 1}
+                </td>
+                <td style={{ padding: '11px 14px', textAlign: 'center', color: '#555', fontSize: '12px' }}>
+                  {item.cantidad}
+                </td>
+                <td style={{ padding: '11px 14px', lineHeight: '1.5' }}>
+                  <div style={{ fontWeight: '600', color: '#1a1a1a', fontSize: '13px' }}>{item.nombre}</div>
+                  {item.marca && (
+                    <div style={{ fontSize: '11px', color: '#888', marginTop: '2px' }}>Marca: {item.marca}</div>
+                  )}
+                </td>
+                <td style={{ padding: '11px 14px', textAlign: 'right', fontFamily: 'monospace', fontWeight: '700', fontSize: '12px', color: '#1a1a1a' }}>
+                  {fmt(item.subtotal)}
+                </td>
+              </tr>
+            ))}
+            {items.length === 0 && (
+              <tr>
+                <td colSpan={4} style={{ padding: '24px', textAlign: 'center', color: '#bbb', fontSize: '12px' }}>
+                  Sin ítems cargados
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
 
-      {/* ── TOTALES ── */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '36px' }}>
-        <div style={{ width: '290px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '7px 0', borderBottom: '1px solid #eee', fontSize: '13px' }}>
-            <span style={{ color: '#666' }}>Subtotal</span>
-            <span style={{ fontFamily: 'monospace', color: '#333' }}>{fmt(subtotal)}</span>
-          </div>
-          {iva > 0 && (
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '7px 0', borderBottom: '1px solid #eee', fontSize: '13px' }}>
-              <span style={{ color: '#666' }}>IVA (21%)</span>
-              <span style={{ fontFamily: 'monospace', color: '#333' }}>{fmt(iva)}</span>
+        {/* Total */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '32px' }}>
+          <div style={{ width: '290px' }}>
+            <div style={{
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              padding: '14px 20px',
+              backgroundColor: '#FF7900', borderRadius: '8px', color: '#fff',
+            }}>
+              <div>
+                <div style={{ fontWeight: '800', fontSize: '14px', letterSpacing: '0.03em' }}>PRECIO TOTAL</div>
+                <div style={{ fontSize: '10px', opacity: 0.85, marginTop: '2px' }}>más IVA</div>
+              </div>
+              <div style={{ fontFamily: 'monospace', fontWeight: '800', fontSize: '16px' }}>
+                {fmt(total)}
+              </div>
             </div>
-          )}
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '13px 18px',
-            marginTop: '10px',
-            backgroundColor: '#FF7900',
-            borderRadius: '8px',
-            color: '#fff',
-          }}>
-            <span style={{ fontWeight: '800', fontSize: '15px', letterSpacing: '0.03em' }}>TOTAL</span>
-            <span style={{ fontFamily: 'monospace', fontWeight: '800', fontSize: '16px' }}>{fmt(total)}</span>
           </div>
         </div>
-      </div>
 
-      {/* ── FOOTER / TÉRMINOS ── */}
-      <div style={{ borderTop: '2px solid #ebebeb', paddingTop: '22px' }}>
-        <div style={{ fontSize: '10px', fontWeight: '700', color: '#FF7900', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px' }}>
-          Términos y Condiciones
-        </div>
-        <ul style={{ margin: '0 0 0 0', paddingLeft: '18px', color: '#666', fontSize: '11px', lineHeight: '2' }}>
-          {terminos.map((t, i) => (
-            <li key={i}>{t}</li>
-          ))}
-        </ul>
+        {/* Descripción de las tareas */}
+        {descripcionTareas && (
+          <div style={{ marginBottom: '32px' }}>
+            <div style={LABEL}>Descripción de las Tareas</div>
+            <div style={{
+              fontSize: '12px', color: '#333', lineHeight: '1.9',
+              whiteSpace: 'pre-line', padding: '18px 20px',
+              backgroundColor: '#f9f9f9', borderRadius: '8px',
+              border: '1px solid #ebebeb',
+            }}>
+              {descripcionTareas}
+            </div>
+          </div>
+        )}
 
-        {/* Líneas de firma */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '52px' }}>
-          <div style={{ width: '210px', textAlign: 'center' }}>
-            <div style={{ borderTop: '1px solid #aaa', paddingTop: '8px', fontSize: '11px', color: '#888' }}>
-              Firma del Cliente
-            </div>
-            <div style={{ fontSize: '10px', color: '#bbb', marginTop: '2px' }}>Aclaración y DNI</div>
-          </div>
-          <div style={{ width: '210px', textAlign: 'center' }}>
-            <div style={{ borderTop: '1px solid #aaa', paddingTop: '8px', fontSize: '11px', color: '#888' }}>
-              Firma y Sello
-            </div>
-            <div style={{ fontSize: '10px', color: '#bbb', marginTop: '2px' }}>CQ Ingeniería en Climatización</div>
+        {/* Exclusiones */}
+        <div style={{ marginBottom: '20px' }}>
+          <div style={LABEL}>Exclusiones</div>
+          <div style={{ fontSize: '12px', color: '#333', lineHeight: '1.9', padding: '14px 18px', backgroundColor: '#f9f9f9', borderRadius: '8px', border: '1px solid #ebebeb' }}>
+            <div style={{ marginBottom: '4px' }}>Quedan excluidos de la presente oferta:</div>
+            <ul style={{ margin: '4px 0 0 0', paddingLeft: '18px', lineHeight: '2' }}>
+              <li>Trabajos de pintura y reparación de mampostería,</li>
+              <li>Cortes de vidrios,</li>
+              <li>Cañería colectora de desagües de unidades exteriores.</li>
+            </ul>
           </div>
         </div>
+
+        {/* Condiciones Comerciales */}
+        <div style={{ marginBottom: '20px' }}>
+          <div style={LABEL}>Condiciones Comerciales</div>
+          <div style={{ fontSize: '12px', color: '#333', lineHeight: '2', padding: '14px 18px', backgroundColor: '#f9f9f9', borderRadius: '8px', border: '1px solid #ebebeb' }}>
+            <div><strong>Validez de la oferta:</strong> 5 días.</div>
+            <div><strong>Lugar de entrega:</strong> Salta capital.</div>
+            <div><strong>Precios:</strong> Los precios cotizados no incluyen I.V.A. Dólar: Banco Nación tipo vendedor.</div>
+            <div><strong>Condición de pago:</strong> Anticipo financiero del 50% y Certificaciones mensuales.</div>
+          </div>
+        </div>
+
+        <div style={ACCENT_BOTTOM} />
       </div>
     </div>
   )
