@@ -135,12 +135,12 @@ export default function Presupuestos() {
 
   async function fetchMaestros() {
     const [
-      { data: c },
+      { data: c, error: errC },
       { data: o },
       { data: v },
       { data: k },
     ] = await Promise.all([
-      supabase.from('clientes').select('id, nombre_empresa, cuit_empresa, contacto_nombre, contacto_telefono, direccion_obra').order('nombre_empresa'),
+      supabase.from('clientes').select('id, nombre_empresa, cuit_empresa, direccion_obra').order('nombre_empresa'),
       supabase.from('obras').select('id, nombre_obra').order('nombre_obra'),
       supabase.from('variables_globales').select('*').eq('id', 1).single(),
       supabase
@@ -154,6 +154,7 @@ export default function Presupuestos() {
         `)
         .order('nombre'),
     ])
+    if (errC) { setError(`Error al cargar clientes: ${errC.message}`); return }
     if (c) setClientes(c)
     if (o) setObras(o)
     if (v) setVarsGlobales(v)
@@ -239,11 +240,12 @@ export default function Presupuestos() {
         supabase.from('presupuestos_items').select('*').eq('presupuesto_id', pres.id).order('id'),
         supabase.from('presupuestos').select('descripcion_tareas, obra').eq('id', pres.id).single(),
       ])
+      const clienteObj = clientes.find(c => c.nombre_empresa === pres.cliente) || null
       const pdfData = {
         numero: pres.id,
         fecha: pres.fecha ? new Date(pres.fecha + 'T12:00:00').toLocaleDateString('es-AR') : '—',
         cliente: pres.cliente || '—',
-        clienteObj: null,
+        clienteObj,
         obra: fullPres?.obra || pres.obra || '',
         items: (its || []).map(it => ({
           nombre: it.servicio_nombre || '—',

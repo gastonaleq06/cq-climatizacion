@@ -3,6 +3,10 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 
+function getHoyAR() {
+  return new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' })
+}
+
 export default function Asignaciones() {
   const [asignaciones, setAsignaciones] = useState([])
   const [obras, setObras] = useState([])
@@ -14,7 +18,7 @@ export default function Asignaciones() {
   const [modalAbierto, setModalAbierto] = useState(false)
   const [guardando, setGuardando] = useState(false)
   const [errorForm, setErrorForm] = useState(null)
-  const [form, setForm] = useState({ id_obra: '', fecha_asignacion: '' })
+  const [form, setForm] = useState({ id_obra: '', fecha_asignacion: '', descripcion_trabajo: '' })
   const [tecnicosSeleccionados, setTecnicosSeleccionados] = useState(new Set())
 
   const [eliminandoId, setEliminandoId] = useState(null)
@@ -58,7 +62,8 @@ export default function Asignaciones() {
   function abrirModalNuevo() {
     setForm({
       id_obra: obras[0]?.id?.toString() || '',
-      fecha_asignacion: '',
+      fecha_asignacion: getHoyAR(),
+      descripcion_trabajo: '',
     })
     setTecnicosSeleccionados(new Set())
     setErrorForm(null)
@@ -113,6 +118,7 @@ export default function Asignaciones() {
         id_obra: Number(form.id_obra),
         id_empleado: Number(tecnicoId),
         fecha_asignacion: form.fecha_asignacion.trim(),
+        descripcion_trabajo: form.descripcion_trabajo.trim() || null,
       }))
 
       const { error } = await supabase.from('asignacion_obras').insert(payload)
@@ -265,6 +271,18 @@ export default function Asignaciones() {
                   value={form.fecha_asignacion}
                   onChange={handleChange}
                   className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm text-gray-500 mb-1">Descripción del Trabajo</label>
+                <textarea
+                  name="descripcion_trabajo"
+                  value={form.descripcion_trabajo}
+                  onChange={handleChange}
+                  rows={3}
+                  placeholder="Ej: Instalación de split en oficina principal, carga de gas, prueba de funcionamiento..."
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary resize-none"
                 />
               </div>
 

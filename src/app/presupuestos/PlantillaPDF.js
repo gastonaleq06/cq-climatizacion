@@ -106,8 +106,6 @@ const PlantillaPDF = forwardRef(function PlantillaPDF({ presupuesto }, ref) {
             <div style={{ fontWeight: '700', fontSize: '14px', marginBottom: '4px' }}>{clienteObj?.nombre_empresa || cliente || '—'}</div>
             <div style={{ color: '#555', lineHeight: '1.9', fontSize: '12px' }}>
               {clienteObj?.cuit_empresa && <div>CUIT: {clienteObj.cuit_empresa}</div>}
-              {clienteObj?.contacto_nombre && <div>Contacto: {clienteObj.contacto_nombre}</div>}
-              {clienteObj?.contacto_telefono && <div>Tel: {clienteObj.contacto_telefono}</div>}
               {clienteObj?.direccion_obra && <div>{clienteObj.direccion_obra}</div>}
               {obra && <div>Obra: {obra}</div>}
             </div>

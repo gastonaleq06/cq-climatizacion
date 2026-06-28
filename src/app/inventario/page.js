@@ -37,6 +37,8 @@ export default function Inventario() {
   const [errorDespacho, setErrorDespacho] = useState(null)
   const [despachando, setDespachando] = useState(false)
 
+  const [soloConStock, setSoloConStock] = useState(false)
+
   const [modalHistorial, setModalHistorial] = useState(false)
   const [itemHistorial, setItemHistorial] = useState(null)
   const [historial, setHistorial] = useState([])
@@ -54,7 +56,7 @@ export default function Inventario() {
         supabase
           .from('inventario')
           .select('id, nombre_producto, categoria, marca, capacidad, cantidad, estado')
-          .order('id', { ascending: true }),
+          .order('id', { ascending: false }),
         supabase.from('obras').select('id, nombre_obra').order('nombre_obra'),
       ])
 
@@ -76,11 +78,13 @@ export default function Inventario() {
 
   const itemsFiltrados = items.filter((item) => {
     const term = searchTerm.toLowerCase()
-    return (
+    const matchText = (
       item.nombre_producto?.toLowerCase().includes(term) ||
       item.categoria?.toLowerCase().includes(term) ||
       item.marca?.toLowerCase().includes(term)
     )
+    const matchStock = !soloConStock || (item.cantidad !== null && item.cantidad > 0)
+    return matchText && matchStock
   })
 
   function abrirModalNuevo() {
@@ -334,12 +338,25 @@ export default function Inventario() {
           />
         </div>
 
-        <button
-          onClick={abrirModalNuevo}
-          className="bg-primary hover:bg-primary-600 text-white font-medium px-4 py-2 rounded-lg transition-colors shadow-lg shadow-primary/30"
-        >
-          ➕ Nuevo Producto
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setSoloConStock(prev => !prev)}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border transition-colors ${
+              soloConStock
+                ? 'bg-emerald-600 text-white border-emerald-600 shadow-md shadow-emerald-200/50'
+                : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+            }`}
+          >
+            <span className={`w-2 h-2 rounded-full ${soloConStock ? 'bg-white' : 'bg-gray-300'}`} />
+            Solo con stock
+          </button>
+          <button
+            onClick={abrirModalNuevo}
+            className="bg-primary hover:bg-primary-600 text-white font-medium px-4 py-2 rounded-lg transition-colors shadow-lg shadow-primary/30"
+          >
+            ➕ Nuevo Producto
+          </button>
+        </div>
       </div>
 
       <p className="text-gray-500 text-sm mb-4">

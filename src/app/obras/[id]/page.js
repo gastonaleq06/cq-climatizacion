@@ -66,7 +66,7 @@ export default function FichaObra() {
       ] = await Promise.all([
         supabase
           .from('asignacion_obras')
-          .select('id, fecha_asignacion, empleados(nombre)')
+          .select('id, fecha_asignacion, descripcion_trabajo, empleados(nombre)')
           .eq('id_obra', id)
           .order('fecha_asignacion', { ascending: false }),
         supabase
@@ -95,16 +95,7 @@ export default function FichaObra() {
     }
   }
 
-  const tecnicosUnicos = personal.reduce((acc, asig) => {
-    const nombre = asig.empleados?.nombre
-    if (nombre && !acc.find(t => t.nombre === nombre)) {
-      acc.push({ nombre, fechas: [] })
-    }
-    if (nombre) {
-      acc.find(t => t.nombre === nombre).fechas.push(asig.fecha_asignacion)
-    }
-    return acc
-  }, [])
+  const tecnicosUnicosCount = new Set(personal.map(a => a.empleados?.nombre).filter(Boolean)).size
 
   const consumoPorProducto = Object.values(
     movimientos.reduce((acc, m) => {
@@ -167,7 +158,7 @@ export default function FichaObra() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <div className="bg-white rounded-xl border border-gray-200 p-5 text-center">
           <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold mb-1">Técnicos</p>
-          <p className="text-3xl font-bold text-primary">{tecnicosUnicos.length}</p>
+          <p className="text-3xl font-bold text-primary">{tecnicosUnicosCount}</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-5 text-center">
           <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold mb-1">Ítems consumidos</p>
@@ -184,7 +175,7 @@ export default function FichaObra() {
         <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">
           Personal Asignado
         </h3>
-        {tecnicosUnicos.length === 0 ? (
+        {personal.length === 0 ? (
           <p className="text-gray-400 text-sm">No hay técnicos asignados a esta obra.</p>
         ) : (
           <div className="overflow-hidden rounded-lg border border-gray-100">
@@ -192,16 +183,22 @@ export default function FichaObra() {
               <thead>
                 <tr className="bg-gray-50 text-gray-400 uppercase text-xs tracking-wider border-b border-gray-100">
                   <th className="px-4 py-2.5 text-left">Técnico</th>
-                  <th className="px-4 py-2.5 text-left">Asignaciones</th>
-                  <th className="px-4 py-2.5 text-left">Última fecha</th>
+                  <th className="px-4 py-2.5 text-left whitespace-nowrap">Fecha</th>
+                  <th className="px-4 py-2.5 text-left">Descripción del Trabajo</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {tecnicosUnicos.map(t => (
-                  <tr key={t.nombre} className="bg-white">
-                    <td className="px-4 py-3 font-medium text-gray-900">{t.nombre}</td>
-                    <td className="px-4 py-3 text-gray-500">{t.fechas.length}</td>
-                    <td className="px-4 py-3 text-gray-700">{t.fechas[0] ?? '—'}</td>
+                {personal.map(asig => (
+                  <tr key={asig.id} className="bg-white">
+                    <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">
+                      {asig.empleados?.nombre ?? '—'}
+                    </td>
+                    <td className="px-4 py-3 text-gray-700 whitespace-nowrap">
+                      {asig.fecha_asignacion ?? '—'}
+                    </td>
+                    <td className="px-4 py-3 text-gray-500">
+                      {asig.descripcion_trabajo || <span className="text-gray-300 italic">Sin descripción</span>}
+                    </td>
                   </tr>
                 ))}
               </tbody>

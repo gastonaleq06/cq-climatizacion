@@ -54,6 +54,7 @@ export default function EditarPresupuesto() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [presupuesto, setPresupuesto] = useState(null)
+  const [clienteObj, setClienteObj] = useState(null)
   const [estado, setEstado] = useState('Pendiente')
   const [items, setItems] = useState([])
   const [guardando, setGuardando] = useState(false)
@@ -83,6 +84,7 @@ export default function EditarPresupuesto() {
         { data: its, error: errI },
         { data: vars },
         { data: kitsData },
+        { data: cliList },
       ] = await Promise.all([
         supabase.from('presupuestos').select('*').eq('id', id).single(),
         supabase.from('presupuestos_items').select('*').eq('presupuesto_id', id).order('id'),
@@ -97,6 +99,7 @@ export default function EditarPresupuesto() {
             )
           `)
           .order('nombre'),
+        supabase.from('clientes').select('id, nombre_empresa, cuit_empresa, direccion_obra'),
       ])
 
       if (errP) throw errP
@@ -104,6 +107,11 @@ export default function EditarPresupuesto() {
 
       setPresupuesto(p)
       setEstado(p.estado)
+
+      if (p.cliente && cliList) {
+        const match = cliList.find(c => c.nombre_empresa === p.cliente) || null
+        setClienteObj(match)
+      }
       setItems(
         (its || []).map(it => ({
           _key: String(it.id),
@@ -172,7 +180,7 @@ export default function EditarPresupuesto() {
         ? new Date(presupuesto.fecha + 'T12:00:00').toLocaleDateString('es-AR')
         : '—',
       cliente: presupuesto?.cliente || '—',
-      clienteObj: null,
+      clienteObj: clienteObj ?? null,
       obra: presupuesto?.obra || '',
       items: items.map(it => {
         const qty = parseFloat(it.cantidad) || 0
