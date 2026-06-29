@@ -87,16 +87,18 @@ export default function CatalogoPrecios() {
         .from('variables_globales')
         .select('*')
         .eq('id', 1)
-        .single()
+        .maybeSingle()
       if (error) throw error
-      setVars({
-        dolar: data.dolar?.toString() ?? '',
-        precio_cobre_kg: data.precio_cobre_kg?.toString() ?? '',
-        beneficio_cobre: data.beneficio_cobre?.toString() ?? '',
-        beneficio_general: data.beneficio_general?.toString() ?? '',
-      })
+      if (data) {
+        setVars({
+          dolar: data.dolar?.toString() ?? '',
+          precio_cobre_kg: data.precio_cobre_kg?.toString() ?? '',
+          beneficio_cobre: data.beneficio_cobre?.toString() ?? '',
+          beneficio_general: data.beneficio_general?.toString() ?? '',
+        })
+      }
     } catch (err) {
-      setVarsError(err.message)
+      setVarsError('Error al cargar variables: ' + err.message)
     } finally {
       setVarsLoading(false)
     }
@@ -190,7 +192,8 @@ export default function CatalogoPrecios() {
     try {
       const { error } = await supabase
         .from('variables_globales')
-        .update({
+        .upsert({
+          id: 1,
           dolar: parseFloat(vars.dolar) || 0,
           precio_cobre_kg: parseFloat(vars.precio_cobre_kg) || 0,
           beneficio_cobre: parseFloat(vars.beneficio_cobre) || 0,
@@ -201,7 +204,7 @@ export default function CatalogoPrecios() {
       setVarsSaved(true)
       setTimeout(() => setVarsSaved(false), 2500)
     } catch (err) {
-      setVarsError(err.message)
+      setVarsError('No se pudieron guardar las variables. Intentá de nuevo.')
     } finally {
       setGuardandoVars(false)
     }
