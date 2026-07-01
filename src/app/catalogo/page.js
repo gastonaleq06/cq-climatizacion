@@ -10,6 +10,7 @@ const CATEGORIAS_INSUMOS = [
   'Cables',
   'Aislación',
   'Mano de Obra',
+  'Aires Acondicionados',
   'Otro',
 ]
 
