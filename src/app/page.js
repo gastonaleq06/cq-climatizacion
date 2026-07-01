@@ -4,6 +4,16 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 
+function getHoyAR() {
+  return new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' })
+}
+
+function getFecha7DiasAR() {
+  const d = new Date()
+  d.setDate(d.getDate() + 7)
+  return d.toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' })
+}
+
 const cards = [
   {
     label: 'Técnicos',
@@ -57,16 +67,23 @@ export default function Dashboard() {
   })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [alertasVehiculos, setAlertasVehiculos] = useState([])
 
   useEffect(() => {
     async function fetchCounts() {
       try {
-        const [r0, r1, r2, r3, r4] = await Promise.all([
+        const fecha7dias = getFecha7DiasAR()
+
+        const [r0, r1, r2, r3, r4, r5] = await Promise.all([
           supabase.from('empleados').select('*', { count: 'exact', head: true }),
           supabase.from('obras').select('*', { count: 'exact', head: true }),
           supabase.from('clientes').select('*', { count: 'exact', head: true }),
           supabase.from('asignacion_obras').select('*', { count: 'exact', head: true }),
           supabase.from('inventario').select('*', { count: 'exact', head: true }).eq('estado', 'En stock'),
+          supabase
+            .from('vehiculos')
+            .select('id, patente, fecha_venc_seguro, fecha_venc_revision_tecnica')
+            .or(`fecha_venc_seguro.lte.${fecha7dias},fecha_venc_revision_tecnica.lte.${fecha7dias}`),
         ])
 
         const firstError = [r0, r1, r2, r3, r4].find((r) => r.error)
@@ -79,6 +96,8 @@ export default function Dashboard() {
           asignacion_obras: r3.count,
           enStock: r4.count,
         })
+
+        if (!r5.error && r5.data) setAlertasVehiculos(r5.data)
       } catch (err) {
         setError(err.message)
       } finally {
@@ -100,6 +119,55 @@ export default function Dashboard() {
         <div className="bg-red-50 border border-red-300 text-red-600 rounded-lg p-4 mb-6">
           <p className="font-semibold">Error al cargar datos</p>
           <p className="text-sm mt-1 font-mono">{error}</p>
+        </div>
+      )}
+
+      {/* Banner de alertas de vehículos */}
+      {alertasVehiculos.length > 0 && (
+        <div className="bg-red-50 border border-red-300 rounded-xl p-4 mb-6">
+          <div className="flex items-start gap-3">
+            <span className="text-2xl leading-none">⚠️</span>
+            <div className="flex-1">
+              <p className="font-semibold text-red-700 text-sm mb-2">
+                Vencimientos próximos o vencidos ({alertasVehiculos.length} vehículo{alertasVehiculos.length !== 1 ? 's' : ''})
+              </p>
+              <ul className="space-y-1">
+                {alertasVehiculos.map((v) => {
+                  const hoyStr = getHoyAR()
+                  const lines = []
+                  if (v.fecha_venc_seguro && v.fecha_venc_seguro <= getFecha7DiasAR()) {
+                    const vencido = v.fecha_venc_seguro < hoyStr
+                    lines.push(
+                      <li key={`seg-${v.id}`} className="text-sm text-red-600">
+                        <span className="font-mono font-semibold">{v.patente}</span>
+                        {' — Seguro '}
+                        {vencido ? 'venció el' : 'vence el'}{' '}
+                        <strong>{new Date(v.fecha_venc_seguro + 'T12:00:00').toLocaleDateString('es-AR')}</strong>
+                      </li>
+                    )
+                  }
+                  if (v.fecha_venc_revision_tecnica && v.fecha_venc_revision_tecnica <= getFecha7DiasAR()) {
+                    const vencido = v.fecha_venc_revision_tecnica < hoyStr
+                    lines.push(
+                      <li key={`rev-${v.id}`} className="text-sm text-red-600">
+                        <span className="font-mono font-semibold">{v.patente}</span>
+                        {' — Rev. Técnica '}
+                        {vencido ? 'venció el' : 'vence el'}{' '}
+                        <strong>{new Date(v.fecha_venc_revision_tecnica + 'T12:00:00').toLocaleDateString('es-AR')}</strong>
+                      </li>
+                    )
+                  }
+                  return lines
+                })}
+              </ul>
+              <Link
+                href="/vehiculos"
+                className="inline-block mt-2 text-xs font-medium text-red-600 hover:text-red-800 underline transition-colors"
+              >
+                Ver todos los vehículos →
+              </Link>
+            </div>
+          </div>
         </div>
       )}
 

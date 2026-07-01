@@ -13,6 +13,7 @@ const navItems = [
   { href: '/asignaciones', label: 'Asignaciones', icon: '📋' },
   { href: '/clientes', label: 'Clientes', icon: '👥' },
   { href: '/inventario', label: 'Inventario', icon: '📦' },
+  { href: '/vehiculos', label: 'Vehículos', icon: '🚐' },
   { href: '/nomina', label: 'Nómina', icon: '💵' },
   { href: '/gastos', label: 'Gastos', icon: '💸' },
   { href: '/catalogo', label: 'Catálogo de Precios', icon: '🏷️' },
