@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import PlantillaPDF from './PlantillaPDF'
 import { descargarPDF } from './generarPDF'
+import { calcPrecioVentaInsumo } from '@/lib/pricing'
 
 // ── Constantes ────────────────────────────────────────────────────────────────
 
@@ -34,20 +35,6 @@ function formatPrecio(valor) {
 
 function genKey() {
   return Math.random().toString(36).slice(2) + Date.now().toString(36)
-}
-
-// Precio de venta de un insumo según las variables globales
-function calcPrecioVentaInsumo(insumo, vars) {
-  if (!insumo || !vars) return 0
-  if (insumo.categoria === 'Cañería de cobre') {
-    const base = (insumo.peso_kg || 0) * (vars.precio_cobre_kg || 0)
-    return base * (1 + (vars.beneficio_cobre || 0) / 100)
-  }
-  const base =
-    insumo.moneda === 'USD'
-      ? (insumo.precio_base || 0) * (vars.dolar || 0)
-      : insumo.precio_base || 0
-  return base * (1 + (vars.beneficio_general || 0) / 100)
 }
 
 // Precio unitario de un kit (suma de insumos + mano de obra base)
@@ -667,7 +654,7 @@ export default function Presupuestos() {
             </div>
             {varsGlobales && (
               <p className="text-xs text-gray-400 mt-2.5">
-                Precios calculados con: Dólar ${varsGlobales.dolar} · Cobre ${varsGlobales.precio_cobre_kg}/Kg · Benef. Cobre {varsGlobales.beneficio_cobre}% · Benef. Gral {varsGlobales.beneficio_general}%
+                Precios calculados con: Dólar ${varsGlobales.dolar} · Cobre U$S${varsGlobales.precio_cobre_usd_kg}/Kg · Benef. Cobre {varsGlobales.beneficio_cobre}% · Benef. Gral {varsGlobales.beneficio_general}%
               </p>
             )}
           </div>

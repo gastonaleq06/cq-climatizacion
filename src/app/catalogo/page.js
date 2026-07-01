@@ -2,6 +2,7 @@
 
 import { Fragment, useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
+import { calcPrecioVentaInsumo } from '@/lib/pricing'
 
 const CATEGORIAS_INSUMOS = [
   'Cañería de cobre',
@@ -31,7 +32,7 @@ const FORM_KIT_VACIO = {
 
 const VARS_VACIO = {
   dolar: '',
-  precio_cobre_kg: '',
+  precio_cobre_usd_kg: '',
   beneficio_cobre: '',
   beneficio_general: '',
 }
@@ -92,7 +93,7 @@ export default function CatalogoPrecios() {
       if (data) {
         setVars({
           dolar: data.dolar?.toString() ?? '',
-          precio_cobre_kg: data.precio_cobre_kg?.toString() ?? '',
+          precio_cobre_usd_kg: data.precio_cobre_usd_kg?.toString() ?? '',
           beneficio_cobre: data.beneficio_cobre?.toString() ?? '',
           beneficio_general: data.beneficio_general?.toString() ?? '',
         })
@@ -152,29 +153,16 @@ export default function CatalogoPrecios() {
   }, [])
 
   // ── Cálculo de precios ───────────────────────────────────────────
-  const varsNum = {
+  const varsParseados = {
     dolar: parseFloat(vars.dolar) || 0,
-    cobre_kg: parseFloat(vars.precio_cobre_kg) || 0,
-    ben_cobre: parseFloat(vars.beneficio_cobre) || 0,
-    ben_general: parseFloat(vars.beneficio_general) || 0,
-  }
-
-  function calcPrecioVenta(insumo) {
-    if (!insumo) return 0
-    if (esCobre(insumo.categoria)) {
-      const base = (insumo.peso_kg || 0) * varsNum.cobre_kg
-      return base * (1 + varsNum.ben_cobre / 100)
-    }
-    const base =
-      insumo.moneda === 'USD'
-        ? (insumo.precio_base || 0) * varsNum.dolar
-        : insumo.precio_base || 0
-    return base * (1 + varsNum.ben_general / 100)
+    precio_cobre_usd_kg: parseFloat(vars.precio_cobre_usd_kg) || 0,
+    beneficio_cobre: parseFloat(vars.beneficio_cobre) || 0,
+    beneficio_general: parseFloat(vars.beneficio_general) || 0,
   }
 
   function calcCostoMaterialesKit(kit) {
     return (kit.kit_insumos || []).reduce((sum, item) => {
-      return sum + calcPrecioVenta(item.catalogo_insumos) * (item.cantidad || 0)
+      return sum + calcPrecioVentaInsumo(item.catalogo_insumos, varsParseados) * (item.cantidad || 0)
     }, 0)
   }
 
@@ -182,7 +170,7 @@ export default function CatalogoPrecios() {
   const costoKitVivo = Object.entries(kitSeleccionados).reduce((sum, [insumoId, qty]) => {
     const insumo = insumos.find((i) => i.id.toString() === insumoId)
     if (!insumo) return sum
-    return sum + calcPrecioVenta(insumo) * (parseFloat(qty) || 0)
+    return sum + calcPrecioVentaInsumo(insumo, varsParseados) * (parseFloat(qty) || 0)
   }, 0)
 
   // ── Handlers vars ────────────────────────────────────────────────
@@ -195,7 +183,7 @@ export default function CatalogoPrecios() {
         .upsert({
           id: 1,
           dolar: parseFloat(vars.dolar) || 0,
-          precio_cobre_kg: parseFloat(vars.precio_cobre_kg) || 0,
+          precio_cobre_usd_kg: parseFloat(vars.precio_cobre_usd_kg) || 0,
           beneficio_cobre: parseFloat(vars.beneficio_cobre) || 0,
           beneficio_general: parseFloat(vars.beneficio_general) || 0,
         })
@@ -450,7 +438,7 @@ export default function CatalogoPrecios() {
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
               {[
                 { key: 'dolar', label: 'Precio Dólar', suffix: 'ARS/USD' },
-                { key: 'precio_cobre_kg', label: 'Precio Cobre', suffix: '$/Kg' },
+                { key: 'precio_cobre_usd_kg', label: 'Precio Cobre', suffix: 'U$S/Kg' },
                 { key: 'beneficio_cobre', label: 'Beneficio Cobre', suffix: '%' },
                 { key: 'beneficio_general', label: 'Beneficio General', suffix: '%' },
               ].map(({ key, label, suffix }) => (
@@ -534,7 +522,7 @@ export default function CatalogoPrecios() {
                                 : `${insumo.moneda === 'USD' ? 'U$S ' : '$ '}${insumo.precio_base ?? '—'}`}
                             </td>
                             <td className="px-4 py-3 text-right font-mono font-bold text-gray-900">
-                              {formatARS(calcPrecioVenta(insumo))}
+                              {formatARS(calcPrecioVentaInsumo(insumo, varsParseados))}
                             </td>
                             <td className="px-4 py-3">
                               <div className="flex gap-2">
@@ -672,7 +660,7 @@ export default function CatalogoPrecios() {
                           ) : (
                             (kit.kit_insumos || []).map((item) => {
                               const insumo = item.catalogo_insumos
-                              const subtotal = calcPrecioVenta(insumo) * (item.cantidad || 0)
+                              const subtotal = calcPrecioVentaInsumo(insumo, varsParseados) * (item.cantidad || 0)
                               return (
                                 <div key={item.id} className="flex items-baseline justify-between gap-2 text-xs">
                                   <span className="text-gray-600 truncate">
@@ -879,7 +867,7 @@ export default function CatalogoPrecios() {
                           {items.map((insumo) => {
                             const id = insumo.id.toString()
                             const checked = id in kitSeleccionados
-                            const precioUnit = calcPrecioVenta(insumo)
+                            const precioUnit = calcPrecioVentaInsumo(insumo, varsParseados)
                             const qty = kitSeleccionados[id] ?? ''
                             const subtotal = parseFloat(qty) > 0 ? precioUnit * parseFloat(qty) : 0
 
