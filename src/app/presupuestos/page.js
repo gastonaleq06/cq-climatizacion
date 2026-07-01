@@ -71,6 +71,7 @@ export default function Presupuestos() {
   const [clientes, setClientes] = useState([])
   const [obras, setObras] = useState([])
   const [kits, setKits] = useState([])
+  const [insumos, setInsumos] = useState([])
   const [varsGlobales, setVarsGlobales] = useState(null)
   const [presupuestos, setPresupuestos] = useState([])
   const [loading, setLoading] = useState(true)
@@ -92,15 +93,30 @@ export default function Presupuestos() {
   const [kitSelId, setKitSelId] = useState('')
   const [kitCantidad, setKitCantidad] = useState(1)
 
+  // ── Panel de insumo
+  const [mostrarInsumoPanel, setMostrarInsumoPanel] = useState(false)
+  const [insumoSelId, setInsumoSelId] = useState('')
+  const [insumoCantidad, setInsumoCantidad] = useState(1)
+
   // ── Total reactivo ────────────────────────────────────────────────────────
 
   const total = useMemo(() =>
     items.reduce((sum, it) => {
       const qty = parseFloat(it.cantidad) || 0
       if (it._type === 'kit') return sum + qty * calcPrecioKitUnit(it, varsGlobales)
+      if (it._type === 'insumo') return sum + qty * calcPrecioVentaInsumo(it._insumo, varsGlobales)
       return sum + qty * (parseFloat(it.precio_unitario) || 0)
     }, 0),
   [items, varsGlobales])
+
+  // ── Insumos agrupados por categoría (para el selector) ───────────────────
+
+  const insumosAgrupados = insumos.reduce((acc, insumo) => {
+    const cat = insumo.categoria || 'Sin categoría'
+    if (!acc[cat]) acc[cat] = []
+    acc[cat].push(insumo)
+    return acc
+  }, {})
 
   // ── Fetch ─────────────────────────────────────────────────────────────────
 
@@ -126,6 +142,7 @@ export default function Presupuestos() {
       { data: o },
       { data: v },
       { data: k },
+      { data: ins },
     ] = await Promise.all([
       supabase.from('clientes').select('id, nombre_empresa, cuit_empresa, direccion_obra').order('nombre_empresa'),
       supabase.from('obras').select('id, nombre_obra').order('nombre_obra'),
@@ -140,12 +157,18 @@ export default function Presupuestos() {
           )
         `)
         .order('nombre'),
+      supabase
+        .from('catalogo_insumos')
+        .select('id, categoria, nombre, unidad, precio_base, peso_kg, moneda')
+        .order('categoria')
+        .order('nombre'),
     ])
     if (errC) { setError(`Error al cargar clientes: ${errC.message}`); return }
     if (c) setClientes(c)
     if (o) setObras(o)
     if (v) setVarsGlobales(v)
     if (k) setKits(k)
+    if (ins) setInsumos(ins)
   }
 
   useEffect(() => {
@@ -176,6 +199,21 @@ export default function Presupuestos() {
     setItems(prev => [...prev, itemManualVacio()])
   }
 
+  function agregarInsumo() {
+    const insumo = insumos.find(i => String(i.id) === insumoSelId)
+    if (!insumo) return
+    setItems(prev => [...prev, {
+      _key: genKey(),
+      _type: 'insumo',
+      _insumo: insumo,
+      servicio_nombre: insumo.nombre,
+      cantidad: parseFloat(insumoCantidad) || 1,
+    }])
+    setMostrarInsumoPanel(false)
+    setInsumoSelId('')
+    setInsumoCantidad(1)
+  }
+
   function eliminarItem(key) {
     setItems(prev => prev.filter(it => it._key !== key))
   }
@@ -199,6 +237,11 @@ export default function Presupuestos() {
           const unit = calcPrecioKitUnit(it, varsGlobales)
           const qty = parseFloat(it.cantidad) || 0
           return { nombre: it._kitNombre, marca: it._marca || '', cantidad: qty, subtotal: qty * unit }
+        }
+        if (it._type === 'insumo') {
+          const unit = calcPrecioVentaInsumo(it._insumo, varsGlobales)
+          const qty = parseFloat(it.cantidad) || 0
+          return { nombre: it.servicio_nombre || it._insumo?.nombre || '—', marca: '', cantidad: qty, subtotal: qty * unit }
         }
         const qty = parseFloat(it.cantidad) || 0
         const price = parseFloat(it.precio_unitario) || 0
@@ -270,6 +313,9 @@ export default function Presupuestos() {
           return setErrorForm('El precio unitario de cada ítem manual debe ser válido.')
         }
       }
+      if (it._type === 'insumo' && !it.servicio_nombre.trim()) {
+        return setErrorForm('Cada ítem de insumo necesita una descripción.')
+      }
     }
 
     setGuardando(true)
@@ -296,6 +342,18 @@ export default function Presupuestos() {
             presupuesto_id: pres.id,
             servicio_nombre: it._kitNombre + (it._marca ? ` — ${it._marca}` : ''),
             descripcion: it._marca ? `Marca: ${it._marca}` : null,
+            cantidad: qty,
+            precio_unitario: precio,
+            subtotal: qty * precio,
+          }
+        }
+        if (it._type === 'insumo') {
+          const precio = calcPrecioVentaInsumo(it._insumo, varsGlobales)
+          const qty = parseFloat(it.cantidad)
+          return {
+            presupuesto_id: pres.id,
+            servicio_nombre: it.servicio_nombre.trim(),
+            descripcion: null,
             cantidad: qty,
             precio_unitario: precio,
             subtotal: qty * precio,
@@ -338,6 +396,9 @@ export default function Presupuestos() {
     setMostrarKitPanel(false)
     setKitSelId('')
     setKitCantidad(1)
+    setMostrarInsumoPanel(false)
+    setInsumoSelId('')
+    setInsumoCantidad(1)
   }
 
   function cancelarNuevo() {
@@ -593,6 +654,16 @@ export default function Presupuestos() {
               + Agregar Kit
             </button>
             <button
+              onClick={() => setMostrarInsumoPanel(p => !p)}
+              className={`text-sm font-medium border px-3 py-1.5 rounded-lg transition-colors ${
+                mostrarInsumoPanel
+                  ? 'bg-primary/10 border-primary/40 text-primary'
+                  : 'border-gray-200 text-gray-600 hover:border-gray-300 hover:text-gray-800'
+              }`}
+            >
+              + Agregar Insumo
+            </button>
+            <button
               onClick={agregarItemManual}
               className="text-primary hover:text-primary-600 text-sm font-medium border border-primary/30 hover:border-primary/60 px-3 py-1.5 rounded-lg transition-colors"
             >
@@ -646,6 +717,69 @@ export default function Presupuestos() {
                   type="button"
                   onClick={agregarKit}
                   disabled={!kitSelId}
+                  className="bg-primary hover:bg-primary-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+                >
+                  Agregar
+                </button>
+              </div>
+            </div>
+            {varsGlobales && (
+              <p className="text-xs text-gray-400 mt-2.5">
+                Precios calculados con: Dólar ${varsGlobales.dolar} · Cobre U$S${varsGlobales.precio_cobre_usd_kg}/Kg · Benef. Cobre {varsGlobales.beneficio_cobre}% · Benef. Gral {varsGlobales.beneficio_general}%
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Panel selector de insumo */}
+        {mostrarInsumoPanel && (
+          <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 mb-4">
+            <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-3">
+              Seleccionar Insumo del Catálogo
+            </p>
+            <div className="flex flex-wrap items-end gap-3">
+              <div className="flex-1 min-w-48">
+                <label className="block text-xs text-gray-500 mb-1">Insumo</label>
+                <select
+                  value={insumoSelId}
+                  onChange={e => setInsumoSelId(e.target.value)}
+                  className={inputSmCls}
+                >
+                  <option value="">— Elegir insumo —</option>
+                  {Object.entries(insumosAgrupados).map(([cat, list]) => (
+                    <optgroup key={cat} label={cat}>
+                      {list.map(i => (
+                        <option key={i.id} value={String(i.id)}>
+                          {i.nombre} ({i.unidad})
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
+                </select>
+              </div>
+              <div className="w-36">
+                <label className="block text-xs text-gray-500 mb-1">Cantidad</label>
+                <input
+                  type="number"
+                  value={insumoCantidad}
+                  onChange={e => setInsumoCantidad(e.target.value)}
+                  min="0"
+                  step="any"
+                  className={inputSmCls}
+                />
+              </div>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => { setMostrarInsumoPanel(false); setInsumoSelId('') }}
+                  className="px-3 py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={agregarInsumo}
+                  disabled={!insumoSelId}
                   className="bg-primary hover:bg-primary-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
                 >
                   Agregar
@@ -721,6 +855,63 @@ export default function Presupuestos() {
                       <p className="font-mono font-semibold text-gray-900 text-sm">{formatPrecio(subtotal)}</p>
                       {varsGlobales && (
                         <p className="text-xs text-primary/50 mt-0.5">{formatPrecio(precioUnit)} / unidad</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )
+            }
+
+            if (it._type === 'insumo') {
+              const precioUnit = calcPrecioVentaInsumo(it._insumo, varsGlobales)
+              const subtotal = (parseFloat(it.cantidad) || 0) * precioUnit
+
+              return (
+                <div key={it._key} className="border border-primary/20 rounded-xl p-4 bg-primary/[0.03]">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-400 font-semibold uppercase tracking-wide">
+                        Ítem #{idx + 1}
+                      </span>
+                      <span className="text-xs bg-primary/10 text-primary font-medium px-2 py-0.5 rounded-full">
+                        Insumo
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => eliminarItem(it._key)}
+                      className="text-red-400 hover:text-red-600 text-xs font-medium transition-colors"
+                    >
+                      ✕ Eliminar
+                    </button>
+                  </div>
+
+                  <div className="mb-3">
+                    <label className="block text-xs text-gray-400 mb-1">Descripción *</label>
+                    <input
+                      type="text"
+                      value={it.servicio_nombre}
+                      onChange={e => actualizarItem(it._key, 'servicio_nombre', e.target.value)}
+                      className={inputSmCls}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+                    <div>
+                      <label className="block text-xs text-gray-400 mb-1">Cantidad *</label>
+                      <input
+                        type="number"
+                        value={it.cantidad}
+                        onChange={e => actualizarItem(it._key, 'cantidad', e.target.value)}
+                        min="0"
+                        step="any"
+                        className={inputSmCls}
+                      />
+                    </div>
+                    <div className="sm:col-span-2 pb-0.5 text-right">
+                      <p className="text-xs text-gray-400 mb-1">Subtotal {varsGlobales ? '⚡ reactivo' : ''}</p>
+                      <p className="font-mono font-semibold text-gray-900 text-sm">{formatPrecio(subtotal)}</p>
+                      {varsGlobales && (
+                        <p className="text-xs text-primary/50 mt-0.5">{formatPrecio(precioUnit)} / {it._insumo.unidad}</p>
                       )}
                     </div>
                   </div>

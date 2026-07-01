@@ -57,11 +57,26 @@ export default function EditarPresupuesto() {
   const [kitCantidad, setKitCantidad] = useState(1)
   const [mostrarKitPanel, setMostrarKitPanel] = useState(false)
 
+  // Insumos del catálogo
+  const [insumos, setInsumos] = useState([])
+  const [insumoSelId, setInsumoSelId] = useState('')
+  const [insumoCantidad, setInsumoCantidad] = useState(1)
+  const [mostrarInsumoPanel, setMostrarInsumoPanel] = useState(false)
+
   const total = useMemo(() =>
     items.reduce((sum, it) => {
-      return sum + (parseFloat(it.cantidad) || 0) * (parseFloat(it.precio_unitario) || 0)
+      const qty = parseFloat(it.cantidad) || 0
+      if (it._type === 'insumo') return sum + qty * calcPrecioVentaInsumo(it._insumo, varsGlobales)
+      return sum + qty * (parseFloat(it.precio_unitario) || 0)
     }, 0),
-  [items])
+  [items, varsGlobales])
+
+  const insumosAgrupados = insumos.reduce((acc, insumo) => {
+    const cat = insumo.categoria || 'Sin categoría'
+    if (!acc[cat]) acc[cat] = []
+    acc[cat].push(insumo)
+    return acc
+  }, {})
 
   async function fetchData() {
     setLoading(true)
@@ -73,6 +88,7 @@ export default function EditarPresupuesto() {
         { data: vars },
         { data: kitsData },
         { data: cliList },
+        { data: insumosData },
       ] = await Promise.all([
         supabase.from('presupuestos').select('*').eq('id', id).single(),
         supabase.from('presupuestos_items').select('*').eq('presupuesto_id', id).order('id'),
@@ -88,6 +104,11 @@ export default function EditarPresupuesto() {
           `)
           .order('nombre'),
         supabase.from('clientes').select('id, nombre_empresa, cuit_empresa, direccion_obra'),
+        supabase
+          .from('catalogo_insumos')
+          .select('id, categoria, nombre, unidad, precio_base, peso_kg, moneda')
+          .order('categoria')
+          .order('nombre'),
       ])
 
       if (errP) throw errP
@@ -112,6 +133,7 @@ export default function EditarPresupuesto() {
       )
       if (vars) setVarsGlobales(vars)
       if (kitsData) setKits(kitsData)
+      if (insumosData) setInsumos(insumosData)
     } catch (err) {
       setError(err.message)
     } finally {
@@ -153,6 +175,21 @@ export default function EditarPresupuesto() {
     setItems(prev => [...prev, itemVacio()])
   }
 
+  function agregarInsumo() {
+    const insumo = insumos.find(i => String(i.id) === insumoSelId)
+    if (!insumo) return
+    setItems(prev => [...prev, {
+      _key: Math.random().toString(36).slice(2) + Date.now().toString(36),
+      _type: 'insumo',
+      _insumo: insumo,
+      servicio_nombre: insumo.nombre,
+      cantidad: parseFloat(insumoCantidad) || 1,
+    }])
+    setMostrarInsumoPanel(false)
+    setInsumoSelId('')
+    setInsumoCantidad(1)
+  }
+
   function eliminarItem(key) {
     setItems(prev => prev.filter(it => it._key !== key))
   }
@@ -172,6 +209,15 @@ export default function EditarPresupuesto() {
       obra: presupuesto?.obra || '',
       items: items.map(it => {
         const qty = parseFloat(it.cantidad) || 0
+        if (it._type === 'insumo') {
+          const price = calcPrecioVentaInsumo(it._insumo, varsGlobales)
+          return {
+            nombre: it.servicio_nombre || it._insumo?.nombre || '—',
+            marca: '',
+            cantidad: qty,
+            subtotal: qty * price,
+          }
+        }
         const price = parseFloat(it.precio_unitario) || 0
         return {
           nombre: it.servicio_nombre || '—',
@@ -194,9 +240,11 @@ export default function EditarPresupuesto() {
     for (const it of items) {
       if (!it.servicio_nombre.trim()) return setErrorForm('Cada ítem debe tener un nombre de servicio.')
       const qty = parseFloat(it.cantidad)
-      const price = parseFloat(it.precio_unitario)
       if (isNaN(qty) || qty <= 0) return setErrorForm('La cantidad de cada ítem debe ser mayor a 0.')
-      if (isNaN(price) || price < 0) return setErrorForm('El precio unitario de cada ítem debe ser válido.')
+      if (it._type !== 'insumo') {
+        const price = parseFloat(it.precio_unitario)
+        if (isNaN(price) || price < 0) return setErrorForm('El precio unitario de cada ítem debe ser válido.')
+      }
     }
 
     setGuardando(true)
@@ -214,8 +262,19 @@ export default function EditarPresupuesto() {
       if (errDel) throw errDel
 
       const payload = items.map(it => {
-        const precio = parseFloat(it.precio_unitario) || 0
         const qty = parseFloat(it.cantidad)
+        if (it._type === 'insumo') {
+          const precio = calcPrecioVentaInsumo(it._insumo, varsGlobales)
+          return {
+            presupuesto_id: Number(id),
+            servicio_nombre: it.servicio_nombre.trim(),
+            descripcion: null,
+            cantidad: qty,
+            precio_unitario: precio,
+            subtotal: qty * precio,
+          }
+        }
+        const precio = parseFloat(it.precio_unitario) || 0
         return {
           presupuesto_id: Number(id),
           servicio_nombre: it.servicio_nombre.trim(),
@@ -307,6 +366,16 @@ export default function EditarPresupuesto() {
               + Desde Kit
             </button>
             <button
+              onClick={() => setMostrarInsumoPanel(p => !p)}
+              className={`text-sm font-medium border px-3 py-1.5 rounded-lg transition-colors ${
+                mostrarInsumoPanel
+                  ? 'bg-primary/10 border-primary/40 text-primary'
+                  : 'border-gray-200 text-gray-600 hover:border-gray-300 hover:text-gray-800'
+              }`}
+            >
+              + Agregar Insumo
+            </button>
+            <button
               onClick={agregarItem}
               className="text-primary hover:text-primary-600 text-sm font-medium border border-primary/30 hover:border-primary/60 px-3 py-1.5 rounded-lg transition-colors"
             >
@@ -374,14 +443,134 @@ export default function EditarPresupuesto() {
           </div>
         )}
 
+        {/* Panel selector de insumo */}
+        {mostrarInsumoPanel && (
+          <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 mb-4">
+            <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-3">
+              Seleccionar Insumo del Catálogo
+            </p>
+            <div className="flex flex-wrap items-end gap-3">
+              <div className="flex-1 min-w-48">
+                <label className="block text-xs text-gray-500 mb-1">Insumo</label>
+                <select
+                  value={insumoSelId}
+                  onChange={e => setInsumoSelId(e.target.value)}
+                  className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="">— Elegir insumo —</option>
+                  {Object.entries(insumosAgrupados).map(([cat, list]) => (
+                    <optgroup key={cat} label={cat}>
+                      {list.map(i => (
+                        <option key={i.id} value={String(i.id)}>
+                          {i.nombre} ({i.unidad})
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
+                </select>
+              </div>
+              <div className="w-32">
+                <label className="block text-xs text-gray-500 mb-1">Cantidad</label>
+                <input
+                  type="number"
+                  value={insumoCantidad}
+                  onChange={e => setInsumoCantidad(e.target.value)}
+                  min="0"
+                  step="any"
+                  className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => { setMostrarInsumoPanel(false); setInsumoSelId('') }}
+                  className="px-3 py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={agregarInsumo}
+                  disabled={!insumoSelId}
+                  className="bg-primary hover:bg-primary-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+                >
+                  Agregar
+                </button>
+              </div>
+            </div>
+            {varsGlobales && (
+              <p className="text-xs text-gray-400 mt-2.5">
+                Precios calculados con: Dólar ${varsGlobales.dolar} · Cobre U$S${varsGlobales.precio_cobre_usd_kg}/Kg · Benef. Cobre {varsGlobales.beneficio_cobre}% · Benef. Gral {varsGlobales.beneficio_general}%
+              </p>
+            )}
+          </div>
+        )}
+
         <div className="space-y-4">
           {items.length === 0 && (
             <p className="text-center text-gray-400 py-8 text-sm">
-              No hay ítems. Usá "+ Agregar Ítem" o "+ Desde Kit" para comenzar.
+              No hay ítems. Usá "+ Agregar Ítem", "+ Desde Kit" o "+ Agregar Insumo" para comenzar.
             </p>
           )}
 
           {items.map((it, idx) => {
+            if (it._type === 'insumo') {
+              const precioUnit = calcPrecioVentaInsumo(it._insumo, varsGlobales)
+              const subtotal = (parseFloat(it.cantidad) || 0) * precioUnit
+
+              return (
+                <div key={it._key} className="border border-primary/20 rounded-xl p-4 bg-primary/[0.03]">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-400 font-semibold uppercase tracking-wide">
+                        Ítem #{idx + 1}
+                      </span>
+                      <span className="text-xs bg-primary/10 text-primary font-medium px-2 py-0.5 rounded-full">
+                        Insumo
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => eliminarItem(it._key)}
+                      className="text-red-400 hover:text-red-600 text-xs font-medium transition-colors"
+                    >
+                      ✕ Eliminar
+                    </button>
+                  </div>
+
+                  <div className="mb-3">
+                    <label className="block text-xs text-gray-400 mb-1">Descripción *</label>
+                    <input
+                      type="text"
+                      value={it.servicio_nombre}
+                      onChange={e => actualizarItem(it._key, 'servicio_nombre', e.target.value)}
+                      className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+                    <div>
+                      <label className="block text-xs text-gray-400 mb-1">Cantidad *</label>
+                      <input
+                        type="number"
+                        value={it.cantidad}
+                        onChange={e => actualizarItem(it._key, 'cantidad', e.target.value)}
+                        min="0"
+                        step="any"
+                        className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary"
+                      />
+                    </div>
+                    <div className="sm:col-span-2 pb-0.5 text-right">
+                      <p className="text-xs text-gray-400 mb-1">Subtotal {varsGlobales ? '⚡ reactivo' : ''}</p>
+                      <p className="font-mono font-semibold text-gray-900 text-sm">{formatPrecio(subtotal)}</p>
+                      {varsGlobales && (
+                        <p className="text-xs text-primary/50 mt-0.5">{formatPrecio(precioUnit)} / {it._insumo.unidad}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )
+            }
+
             const precio = parseFloat(it.precio_unitario) || 0
             const subtotal = (parseFloat(it.cantidad) || 0) * precio
             return (
